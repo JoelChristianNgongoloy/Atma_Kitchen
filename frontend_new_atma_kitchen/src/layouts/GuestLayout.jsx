@@ -1,5 +1,5 @@
+import React from "react";
 import { Outlet } from "react-router-dom";
-
 import NavbarCustomer from "../component/NavbarCustomer";
 
 const routes = [
@@ -16,7 +16,7 @@ const routes = [
     name: "Product",
   },
   {
-    path: "/pesanan",
+    path: "/order",
     name: "Order",
   },
   {
@@ -24,15 +24,16 @@ const routes = [
     name: "Contact",
   },
 ];
-const CustomerLayout = ({ children }) => {
+
+const MainLayout = () => {
   return (
     <div className="h-screen bg-gray-400">
       <div className="max-h-[768px]">
-        <NavbarCustomer routes={routes} />
-        {children ? children : <Outlet />}
+        
+        <Outlet />
       </div>
     </div>
   );
 };
 
-export default CustomerLayout;
+export default MainLayout;

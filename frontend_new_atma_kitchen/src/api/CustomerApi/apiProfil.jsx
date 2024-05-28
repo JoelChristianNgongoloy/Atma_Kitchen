@@ -1,4 +1,4 @@
-import useAxios from ".";
+import useAxios from "..";
 
 export const GetUserLogin = async () => {
   try {

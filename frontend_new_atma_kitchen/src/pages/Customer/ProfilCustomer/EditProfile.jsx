@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "@material-tailwind/react";
 
-import { GetUserLogin, GetUserUpdate } from "../../../api/apiProfil";
+import { GetUserLogin, GetUserUpdate } from "../../../api/CustomerApi/apiProfil";
 
 const EditProfile = ({ customer, onClose }) => {
   const [open, setOpen] = useState(false);

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PengeluaranController;
 use App\Http\Controllers\Api\PenitipController;
 use App\Http\Controllers\Api\PresensiController;
 use App\Http\Controllers\Api\ProdukController;
+use App\Http\Controllers\Api\PesananController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Middleware\Customer;
+
 
 // use App\Http\Controllers\Api\LoginControllerController;
 
@@ -90,6 +92,11 @@ Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::get('/penitip/{id}', [PenitipController::class, 'show']);
     Route::put('/penitip/{id}', [PenitipController::class, 'update']);
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy']);
+
+    //Pesanan
+    Route::get('/pesanan/konfirmasi', [PesananController::class, 'indexKonfirm']);
+    Route::put('/pesanan/konfirmasi/{id}', [PesananController::class, 'updateStatus']);
+
 });
 
 Route::group(['middleware' => ['auth:api', 'admin']], function () {
@@ -128,12 +135,15 @@ Route::group(['middleware' => ['auth:api', 'admin']], function () {
     Route::get('/listCustomer', [CustomerController::class, 'index']);
 });
 
-
 Route::group(['middleware' => ['auth:api', 'customer']], function () {
     Route::get('/customer', [CustomerController::class, 'showProfile']);
     Route::put('/customer', [CustomerController::class, 'update']);
+    Route::get('/pesanan', [CustomerController::class, 'showPesanan']);
+    Route::get('/pesanan/{id}', [CustomerController::class, 'showPesananById']);
+    Route::post('/pesanan/bukti/{id}', [CustomerController::class, 'uploadBuktiPembayaran']);
 
     // Route::post('reset/password/initiate', [ResetPasswordCustomerController::class, 'initiateResetPassword']);
 
     // Route::post('reset/password/{reset_key}', [ResetPasswordCustomerController::class, 'resetPassword']);
 });
+Route::put('/pesanan/konfirmasi/{id}', [PesananController::class, 'update']);

@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-const String baseURL = "http://192.168.34.63/Backend_Atma_Kitchen/public/api";
+const String baseURL =
+    "http://192.168.210.63/Atma_Kitchen/Backend_Atma_Kitchen/public/api";
 const Map<String, String> headers = {
   'Content-Type': 'application/json',
 };

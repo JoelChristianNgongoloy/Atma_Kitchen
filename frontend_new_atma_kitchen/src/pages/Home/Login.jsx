@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { AuthLogin } from "../api/Auth";
+import { AuthLogin } from "../../api/Auth";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Card,
   Input,
@@ -41,18 +42,19 @@ const Login = () => {
         console.log("Response:", res);
         sessionStorage.setItem("token", res.token);
         sessionStorage.setItem("userRole", res.data.id_role);
+        sessionStorage.setItem("user", JSON.stringify(res.data));
         if (res.data.id_role === 2) {
           navigate("/admin");
           //   <Alert color="green">Welcome Admin</Alert>
         } else if (res.data.id_role === 3) {
           navigate("/mo");
-          setToastMessage("Welcome, mo!");
+          toast.success("Welcome! Manager Operation!");
         } else if (res.data.id_role === 1) {
           navigate("/owner");
-          setToastMessage("Welcome Owner!");
+          toast.success("Welcome Owner!");
         } else if (res.data.id_role === 4) {
           navigate("/profil");
-          setToastMessage("welcome");
+          toast.success("welcome");
         } else {
           navigate("/");
         }
@@ -60,7 +62,7 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
-        console.log(err.message);
+        toast.dark(err.message);
         setLoading(false);
       });
   };

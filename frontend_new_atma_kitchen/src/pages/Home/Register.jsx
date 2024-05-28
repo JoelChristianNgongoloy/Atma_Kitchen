@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-
-import { AuthRegister } from "../api/Auth";
+import { AuthRegister } from "../../api/Auth";
 import {
   Card,
   Input,

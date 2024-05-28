@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "@material-tailwind/react";
 
-import { GetUserLogin } from "../../../api/apiProfil";
+import { GetUserLogin } from "../../../api/CustomerApi/apiProfil";
 import EditProfile from "./EditProfile";
 
 const ShowProfil = () => {

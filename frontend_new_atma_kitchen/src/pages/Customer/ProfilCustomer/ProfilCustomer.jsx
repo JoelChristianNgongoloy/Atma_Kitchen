@@ -15,7 +15,7 @@ import {
 
 import ShowProfil from "./ShowProfil";
 import GantiPassword from "./GantiPassword";
-import { GetUserLogin } from "../../../api/apiProfil";
+import { GetUserLogin } from "../../../api/CustomerApi/apiProfil";
 
 const ProfilCustomer = () => {
   const [activeTab, setActiveTab] = useState("show");

@@ -18,6 +18,10 @@ import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
 
 import Register from "../pages/Register";
 import Login from "../pages/Login";
+import Home from "../pages/Home";
+import About from "../pages/About"
+import Product from "../pages/Product"
+import Contact from "../pages/Contact"
 
 import MoLayout from "../layouts/MoLayout";
 import WelcomeMo from "../pages/Mo/WelcomeMo";
@@ -25,6 +29,7 @@ import PegawaiMo from "../pages/Mo/PegawaiByMo/PegawaiMo";
 import PenitipMo from "../pages/Mo/PenitipByMo/PenitipMo";
 import PengeluaranMo from "../pages/Mo/PengeluaranByMo/PengeluaranMo";
 import PembelianMo from "../pages/Mo/PembelianByMo/PembelianMo";
+import PesananMo from "../pages/Mo/PesananByMo/PesananMo";
 
 import OwnerLayout from "../layouts/OwnerLayout";
 import WelcomeOwner from "../pages/Owner/WelcomeOwner";
@@ -32,6 +37,7 @@ import GajiOwner from "../pages/Owner/GajiByOwner/GajiOwner";
 import CustomerLayout from "../layouts/CustomerLayout";
 import ProfilCustomer from "../pages/Customer/ProfilCustomer/ProfilCustomer";
 import MainLayout from "../layouts/MainLayout";
+import WaitingOrder from "../pages/Customer/PesananCustomer/WaitingOrder";
 
 const router = createBrowserRouter([
   {
@@ -100,6 +106,10 @@ const router = createBrowserRouter([
         path: "/mo/pengeluaran",
         element: <PengeluaranMo />,
       },
+      {
+        path: "/mo/pesanan",
+        element: <PesananMo />,
+      },
     ],
   },
   {
@@ -124,6 +134,10 @@ const router = createBrowserRouter([
         path: "/profil",
         element: <ProfilCustomer />,
       },
+      {
+        path: "/pesanan",
+        element: <WaitingOrder />,
+      },
     ],
   },
   {
@@ -137,6 +151,22 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/product",
+        element: <Product />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
       },
     ],
   },
