@@ -11,11 +11,13 @@ import {
   UserCircleIcon,
   LockClosedIcon,
   PowerIcon,
+  HomeModernIcon
 } from "@heroicons/react/24/solid";
 
 import ShowProfil from "./ShowProfil";
 import GantiPassword from "./GantiPassword";
 import { GetUserLogin } from "../../../api/apiProfil";
+import AlamatCustomer from "./AlamatCustomer";
 
 const ProfilCustomer = () => {
   const [activeTab, setActiveTab] = useState("show");
@@ -29,12 +31,12 @@ const ProfilCustomer = () => {
       icon: UserCircleIcon,
       element: <ShowProfil />,
     },
-    // {
-    //   label: "Ganti Password",
-    //   value: "ganti",
-    //   icon: LockClosedIcon,
-    //   element: <GantiPassword />,
-    // },
+    {
+      label: "Alamat",
+      value: "alamat",
+      icon: HomeModernIcon,
+      element: <AlamatCustomer />,
+    },
   ];
 
   const redirectToForgetPassword = () => {

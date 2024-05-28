@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Mail\MailSend;
 use App\Models\Customer;
+use App\Models\Promo_Poin;
 
 class RegisterController extends Controller
 {
@@ -48,6 +49,12 @@ class RegisterController extends Controller
                 'saldo' => 0,
                 'poin' => 0,
                 'id_user' => $user->id,
+            ]);
+
+            Promo_Poin::create([
+                'jumlah_promo' => 0,
+                'deskripsi_promo' => 'Pakaikan Promo Poin Anda',
+                'id_customer' => $user->id,
             ]);
 
             $details = [

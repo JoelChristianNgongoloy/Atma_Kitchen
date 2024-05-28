@@ -21,6 +21,8 @@ class Produk extends Model
         'foto_produk',
         'status_produk',
         'id_penitip',
+        'type',
+        'loyang'
     ];
 
     public function Penitip() {

@@ -30,6 +30,23 @@ class BahanBakuController extends Controller
         ], 400);
     }
 
+    public function indexForMo()
+    {
+        $bahan_baku = BahanBaku::all();
+
+        if (count($bahan_baku) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $bahan_baku,
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Bahan Baku Not Found',
+            'data' => null
+        ], 400);
+    }
+
     public function indexMuncul()
     {
         $bahan_baku = BahanBaku::all();

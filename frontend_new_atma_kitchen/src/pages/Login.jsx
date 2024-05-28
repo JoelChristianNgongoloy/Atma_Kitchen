@@ -12,6 +12,8 @@ import {
   Alert,
 } from "@material-tailwind/react";
 
+import toast from "react-hot-toast";
+
 const Login = () => {
   const navigate = useNavigate();
   const [isDisabled, setIsDisabled] = useState(true);
@@ -41,18 +43,20 @@ const Login = () => {
         console.log("Response:", res);
         sessionStorage.setItem("token", res.token);
         sessionStorage.setItem("userRole", res.data.id_role);
+        sessionStorage.setItem("user", JSON.stringify(res.user));
         if (res.data.id_role === 2) {
           navigate("/admin");
           //   <Alert color="green">Welcome Admin</Alert>
+          toast.success("Hai Welcome Admin");
         } else if (res.data.id_role === 3) {
           navigate("/mo");
-          setToastMessage("Welcome, mo!");
+          toast.success("Welcome, mo!");
         } else if (res.data.id_role === 1) {
           navigate("/owner");
-          setToastMessage("Welcome Owner!");
+          toast.success("Welcome Owner!");
         } else if (res.data.id_role === 4) {
           navigate("/profil");
-          setToastMessage("welcome");
+          toast.success(`Welcome ${res.data.nama}`);
         } else {
           navigate("/");
         }
@@ -62,77 +66,92 @@ const Login = () => {
         console.log(err);
         console.log(err.message);
         setLoading(false);
+        toast.error(err.message);
       });
   };
 
   return (
     !token && (
-      <div className="w-full h-full flex justify-center mt-32">
-        <div>
-          <Card className="mx-auto w-full border" color="white">
-            <CardBody className="flex flex-col gap-4">
-              <Typography variant="h4" color="blue-gray">
-                Log In
-              </Typography>
-              <Typography color="gray" className="mt-1 font-normal">
-                Enter your Email and password to Log In.
-              </Typography>
-              <form
-                className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
-                onSubmit={SignIn}
-              >
-                <div className="mb-1 flex flex-col gap-6">
-                  <Typography variant="h6" color="blue-gray" className="-mb-3">
-                    Your Email
-                  </Typography>
-                  <Input
-                    size="lg"
-                    placeholder="name@mail.com"
-                    className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
-                    name="email"
-                    id="email"
-                    onChange={handleChange}
-                  />
-                  <Typography variant="h6" color="blue-gray" className="-mb-3">
-                    Password
-                  </Typography>
-                  <Input
-                    type="password"
-                    id="password"
-                    name="password"
-                    onChange={handleChange}
-                    size="lg"
-                    placeholder="********"
-                    className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
-                  />
-                </div>
-
-                <Button
-                  className="mt-6 flex justify-center"
-                  fullWidth
-                  type="submit"
-                  disabled={isDisabled || loading}
-                >
-                  {loading ? <Spinner variant="light" /> : <span>Log In</span>}
-                </Button>
-                <Typography
-                  color="gray"
-                  className="mt-4 text-center font-normal"
-                >
-                  Don't have an account?{" "}
-                  <a href="/register" className="font-medium text-gray-900">
-                    <strong>Register</strong>
-                  </a>
+      <div className="flex flex-col items-center min-h-screen">
+        <div className="w-full h-full flex justify-center mt-32">
+          <div>
+            <Card className="mx-auto w-full border" color="white">
+              <CardBody className="flex flex-col gap-4">
+                <Typography variant="h4" color="blue-gray">
+                  Log In
                 </Typography>
-              </form>
-            </CardBody>
-          </Card>
+                <Typography color="gray" className="mt-1 font-normal">
+                  Enter your Email and password to Log In.
+                </Typography>
+                <form
+                  className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
+                  onSubmit={SignIn}
+                >
+                  <div className="mb-1 flex flex-col gap-6">
+                    <Typography
+                      variant="h6"
+                      color="blue-gray"
+                      className="-mb-3"
+                    >
+                      Your Email
+                    </Typography>
+                    <Input
+                      size="lg"
+                      placeholder="name@mail.com"
+                      className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                      name="email"
+                      id="email"
+                      onChange={handleChange}
+                    />
+                    <Typography
+                      variant="h6"
+                      color="blue-gray"
+                      className="-mb-3"
+                    >
+                      Password
+                    </Typography>
+                    <Input
+                      type="password"
+                      id="password"
+                      name="password"
+                      onChange={handleChange}
+                      size="lg"
+                      placeholder="********"
+                      className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                    />
+                  </div>
+
+                  <Button
+                    className="mt-6 flex justify-center"
+                    fullWidth
+                    type="submit"
+                    disabled={isDisabled || loading}
+                  >
+                    {loading ? (
+                      <Spinner variant="light" />
+                    ) : (
+                      <span>Log In</span>
+                    )}
+                  </Button>
+                  <Typography
+                    color="gray"
+                    className="mt-4 text-center font-normal"
+                  >
+                    Don't have an account?{" "}
+                    <a href="/register" className="font-medium text-gray-900">
+                      <strong>Register</strong>
+                    </a>
+                  </Typography>
+                </form>
+              </CardBody>
+            </Card>
+          </div>
         </div>
       </div>
     )

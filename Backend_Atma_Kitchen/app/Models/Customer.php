@@ -17,7 +17,6 @@ class Customer extends Model
         'saldo',
         'poin',
         'id_user',
-        'id_alamat',
     ];
 
     public function User(){

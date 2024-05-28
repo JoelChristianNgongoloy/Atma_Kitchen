@@ -6,8 +6,11 @@ import {
   Button,
   IconButton,
   Collapse,
+  Badge,
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+
+import { ShoppingCartIcon, BellIcon } from "@heroicons/react/24/solid";
 
 import AtmaLogo from "../assets/image/Atma_kitchen.png";
 
@@ -34,7 +37,7 @@ const NavbarCustomer = ({ routes }) => {
   };
 
   return (
-    <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
+    <Navbar className="sticky top-0 z-50 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
       <div className="flex items-center justify-around text-blue-gray-900">
         <Typography
           as="a"
@@ -61,6 +64,25 @@ const NavbarCustomer = ({ routes }) => {
                 </span>
               </Typography>
             ))}
+            {!token ? (
+              <>{/* <div></div> */}</>
+            ) : (
+              <>
+                <Typography
+                  as="li"
+                  variant="small"
+                  color="blue-gray"
+                  className="p-1 font-normal"
+                >
+                  <span
+                    onClick={() => navigate("/order")}
+                    className="cursor-pointer"
+                  >
+                    Order
+                  </span>
+                </Typography>
+              </>
+            )}
           </ul>
         </div>
         <div className="flex items-center gap-4">
@@ -85,8 +107,16 @@ const NavbarCustomer = ({ routes }) => {
             </>
           ) : (
             <>
-              <div className="flex items-center gap-4">
-                <span></span>
+              <div className="flex items-center gap-2">
+                <Badge content="5" className="mr-3" withBorder>
+                  <IconButton className="mr-3">
+                    <BellIcon className="h-4 w-4" />
+                  </IconButton>
+                </Badge>
+                <ShoppingCartIcon
+                  onClick={() => navigate("/keranjangUser")}
+                  className="h-8 w-8 mr-3 cursor-pointer"
+                />
                 <Avatar
                   src="https://docs.material-tailwind.com/img/face-2.jpg"
                   alt="avatar"
@@ -94,7 +124,6 @@ const NavbarCustomer = ({ routes }) => {
                   className="p-0.5 cursor-pointer"
                   onClick={() => navigate("/profil")}
                 />
-                {/* <Button onClick={logout}>Logout</Button> */}
               </div>
             </>
           )}
@@ -156,6 +185,25 @@ const NavbarCustomer = ({ routes }) => {
                 </span>
               </Typography>
             ))}
+            {!token ? (
+              <>{/* <div></div> */}</>
+            ) : (
+              <>
+                <Typography
+                  as="li"
+                  variant="small"
+                  color="blue-gray"
+                  className="p-1 font-normal"
+                >
+                  <span
+                    onClick={() => navigate("/order")}
+                    className="cursor-pointer"
+                  >
+                    Order
+                  </span>
+                </Typography>
+              </>
+            )}
           </ul>
         </div>
         <div className="flex flex-col gap-2 mt-4">

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Produk;
 use App\Models\Penitip;
+use App\Models\Kuota;
 use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
@@ -31,9 +32,79 @@ class ProdukController extends Controller
         ], 400);
     }
 
+    public function indexMobile()
+    {
+        $produk = Produk::whereDoesntHave('Penitip')->get();
+
+        if ($produk->isNotEmpty()) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $produk
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Produk Empty',
+            'data' => null
+        ], 400);
+    }
+
     public function produkPenitip()
     {
-        $produk = Produk::whereNotNull('id_penitip')->with(['Penitip'])->get();
+        $produk = Produk::whereNotNull('id_penitip')->where('stok_produk', '>', 0)->with(['Penitip'])->get();
+
+        if ($produk->isNotEmpty()) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $produk
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Produk Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function produkCake()
+    {
+        $produk = Produk::where('type', "Cake")
+            ->where('stok_produk', '>', 0) // Menambahkan pengecekan stok produk
+            ->whereDoesntHave('Penitip')
+            ->get();
+        if ($produk->isNotEmpty()) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $produk
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Produk Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function produkRoti()
+    {
+        $produk = Produk::where('type', "Roti")->where('stok_produk', '>', 0)->whereDoesntHave('Penitip')->get();
+
+        if ($produk->isNotEmpty()) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $produk
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Produk Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function produkMinuman()
+    {
+        $produk = Produk::where('type', "Minuman")->where('stok_produk', '>', 0)->whereDoesntHave('Penitip')->get();
 
         if ($produk->isNotEmpty()) {
             return response([
@@ -60,21 +131,31 @@ class ProdukController extends Controller
             'stok_produk' => 'required',
             'deskripsi_produk' => 'required',
             'harga_produk' => 'required',
-            // 'foto_produk' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
+            'foto_produk' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
             'status_produk' => 'required|in:Pre Order,Ready Stock',
+            'type' => 'required|in:Cake,Roti,Minuman',
+            'loyang' => "in:1 Loyang,1/2 Loyang"
         ]);
 
-        // if ($validate->fails())
-        //     return response(['message' => $validate->errors()], 400);
+        if ($validate->fails())
+            return response(['message' => $validate->errors()], 400);
 
-        // $uploadFolder = 'foto_produk';
-        // $image = $request->file('foto_produk');
-        // $image_uploaded_path = $image->store($uploadFolder, 'public');
-        // $uploadedImageResponse = basename($image_uploaded_path);
+        $uploadFolder = 'produks';
+        $image = $request->file('foto_produk');
+        $image_uploaded_path = $image->store($uploadFolder, 'public');
+        $uploadedImageResponse = basename($image_uploaded_path);
 
-        // $storeData['foto_produk'] = $uploadedImageResponse;
-
+        $storeData['foto_produk'] = $uploadedImageResponse;
         $produk = Produk::create($storeData);
+
+        if ($storeData["status_produk"] === "Pre Order") {
+            $kuota = Kuota::create([
+                'id_produk' => $produk->id,
+                'tanggal_kuota' => now()->setTimezone('Asia/Jakarta'),
+                'loyang' => 10
+            ]);
+        }
+
         return response([
             'message' => 'Created Produk Success',
             'data' => $produk,
@@ -127,14 +208,14 @@ class ProdukController extends Controller
             ], 400);
         }
 
-        if ($request->hasFile('foto_produk')) {
-            $uploadFolder = 'foto_produk';
-            $image = $request->file('foto_produk');
-            $image_uploaded_path = $image->store($uploadFolder, 'public');
-            $uploadedImageResponse = basename($image_uploaded_path);
-            Storage::disk('public')->delete('foto_produk/' . $produk->foto_produk);
-            $updateData['foto_produk'] = $uploadedImageResponse;
-        }
+        // if ($request->hasFile('foto_produk')) {
+        //     $uploadFolder = 'foto_produk';
+        //     $image = $request->file('foto_produk');
+        //     $image_uploaded_path = $image->store($uploadFolder, 'public');
+        //     $uploadedImageResponse = basename($image_uploaded_path);
+        //     Storage::disk('public')->delete('foto_produk/' . $produk->foto_produk);
+        //     $updateData['foto_produk'] = $uploadedImageResponse;
+        // }
 
         $produk->update($updateData);
         return response([
@@ -212,7 +293,7 @@ class ProdukController extends Controller
             'stok_produk' => 'required',
             'deskripsi_produk' => 'required',
             'harga_produk' => 'required',
-            // 'foto_produk' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
+            'foto_produk' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
             'status_produk' => 'required|in:Ready Stock',
             'id_penitip' => 'required',
         ]);
@@ -221,12 +302,12 @@ class ProdukController extends Controller
             return response(['message' => $validate->errors()], 400);
         }
 
-        // $uploadFolder = 'foto_produk';
-        // $image = $request->file('foto_produk');
-        // $image_uploaded_path = $image->store($uploadFolder, 'public');
-        // $uploadedImageResponse = basename($image_uploaded_path);
+        $uploadFolder = 'produks';
+        $image = $request->file('foto_produk');
+        $image_uploaded_path = $image->store($uploadFolder, 'public');
+        $uploadedImageResponse = basename($image_uploaded_path);
 
-        // $storeDataPenitip['foto_produk'] = $uploadedImageResponse;
+        $storeDataPenitip['foto_produk'] = $uploadedImageResponse;
 
         $penitip = Penitip::find($storeDataPenitip['id_penitip']);
         if (!$penitip) {
