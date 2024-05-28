@@ -15,28 +15,35 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import EditProduk from "./EditProduk";
 
+import { Link } from "react-router-dom";
+
 import {
   GetAllProduk,
   DeleteProduk,
   GetAllProdukPenitip,
 } from "../../../api/AdminApi/apiProduk";
+import { getFotoProduk } from "../../../api";
 
 const TABLE_HEAD = [
+  "Foto Produk",
   "Nama Product",
-  "Deskripsi Produk",
   "Stok",
   "harga",
   "Status Produk",
+  "Type Produk",
+  "Loyang",
   "Delete",
   "Edit",
+  "Kuota",
 ];
 
 const TABLE_HEAD_TITIPAN = [
+  "Foto Produk",
   "Nama Product",
-  "Deskripsi Produk",
   "Stok",
   "harga",
   "Status Produk",
+  "Type",
   "Penitip",
   "Delete",
   "Edit",
@@ -48,7 +55,7 @@ const IndexProduk = () => {
   const handleOpen = () => setOpen(!open);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3);
+  const [itemsPerPage] = useState(2);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchKeywordTitipan, setSearchKeywordTitipan] = useState("");
 
@@ -197,21 +204,20 @@ const IndexProduk = () => {
                   return (
                     <tr key={index}>
                       <td className={classes}>
+                        <img
+                          src={getFotoProduk(item.foto_produk)}
+                          alt="foto_produk"
+                          className="object-fit-cover"
+                          style={{ width: "200px", aspectRatio: "16 / 9" }}
+                        />
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
                           {item.nama_produk}
-                        </Typography>
-                      </td>
-                      <td className={`${classes} bg-blue-gray-50/50`}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item.deskripsi_produk}
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -249,6 +255,28 @@ const IndexProduk = () => {
                         </Typography>
                       </td>
                       <td className={`${classes} bg-blue-gray-50/50`}>
+                        <Typography
+                          as="a"
+                          href="#"
+                          variant="small"
+                          color="blue-gray"
+                          className="font-medium"
+                        >
+                          {item.type}
+                        </Typography>
+                      </td>
+                      <td className={`${classes} bg-blue-gray-50/50`}>
+                        <Typography
+                          as="a"
+                          href="#"
+                          variant="small"
+                          color="blue-gray"
+                          className="font-medium"
+                        >
+                          {item.loyang}
+                        </Typography>
+                      </td>
+                      <td className={`${classes} bg-blue-gray-50/50`}>
                         <Button
                           onClick={() => handleDeleteConfirmation(item.id)}
                           variant="gradient"
@@ -258,7 +286,16 @@ const IndexProduk = () => {
                         </Button>
                       </td>
                       <td className={`${classes} bg-blue-gray-50/50`}>
-                        <EditProduk produk={item} onClose={fetchProduk}/>
+                        <EditProduk produk={item} onClose={fetchProduk} />
+                      </td>
+                      <td className={`${classes} bg-blue-gray-50/50`}>
+                        {item.status_produk === "Pre Order" && (
+                          <Link to={`/admin/produk/kuotaproduk/${item.id}`}>
+                            <Button variant="gradient" color="blue">
+                              Kuota
+                            </Button>
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   );
@@ -359,21 +396,20 @@ const IndexProduk = () => {
                   return (
                     <tr key={index}>
                       <td className={classes}>
+                        <img
+                          src={getFotoProduk(item.foto_produk)}
+                          alt="foto_produk"
+                          className="object-fit-cover"
+                          style={{ width: "200px", aspectRatio: "16 / 9" }}
+                        />
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
                           {item.nama_produk}
-                        </Typography>
-                      </td>
-                      <td className={`${classes} bg-blue-gray-50/50`}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {item.deskripsi_produk}
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -411,7 +447,18 @@ const IndexProduk = () => {
                         </Typography>
                       </td>
                       <td className={`${classes} bg-blue-gray-50/50`}>
-                      <Typography
+                        <Typography
+                          as="a"
+                          href="#"
+                          variant="small"
+                          color="blue-gray"
+                          className="font-medium"
+                        >
+                          {item.type}
+                        </Typography>
+                      </td>
+                      <td className={`${classes} bg-blue-gray-50/50`}>
+                        <Typography
                           as="a"
                           href="#"
                           variant="small"
@@ -431,7 +478,10 @@ const IndexProduk = () => {
                         </Button>
                       </td>
                       <td className={`${classes} bg-blue-gray-50/50`}>
-                        {/* <EditProduk produk={item} onClose={fetchProduk} /> */}
+                        <EditProduk
+                          produk={item}
+                          onClose={fetchProdukPenitip}
+                        />
                       </td>
                     </tr>
                   );

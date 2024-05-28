@@ -16,10 +16,5 @@ class Pengadaan extends Model
     protected $fillable = [
         'harga_pengadaan',
         'tanggal_pengadaan',
-        'id_bahan_baku',
     ];
-
-    public function BahanBaku() {
-        return $this->belongsTo(BahanBaku::class, 'id_bahan_baku');
-    }
 }

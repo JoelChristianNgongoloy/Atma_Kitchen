@@ -67,4 +67,9 @@ class User extends Authenticatable
         $this->save();
         return $this->reset_key;
     }
+
+    public function pesanan()
+    {
+        return $this->hasMany(Pesanan::class, 'id_customer');
+    }
 }

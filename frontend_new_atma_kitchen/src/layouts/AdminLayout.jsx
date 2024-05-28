@@ -10,6 +10,8 @@ import {
   BookOpenIcon,
   RectangleStackIcon,
   UserGroupIcon,
+  MapPinIcon,
+  CheckCircleIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -43,6 +45,16 @@ const routes = [
     name: "List Customer",
     icon: <UserGroupIcon className="h-5 w-5" />,
   },
+  {
+    path: "/admin/inputJarak",
+    name: "Jarak Pengiriman",
+    icon: <MapPinIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/admin/konfirmasiPesanan",
+    name: "Konfirmasi Pesanan",
+    icon: <CheckCircleIcon className="h-5 w-5" />,
+  }
 ];
 
 const AdminLayout = ({ children }) => {

@@ -50,6 +50,7 @@ class LoginController extends Controller
                         "token" => $token,
                         "token_type" => 'Bearer',
                         "data" => $userDataResponse,
+                        'user' => $user
                     ], 200);
                 } else {
                     Auth::logout();
