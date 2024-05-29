@@ -25,7 +25,7 @@ const Transaksi = () => {
     setLoading(true);
     try {
       const data = await GetTransaksi(id);
-      console.log(data); // Tambahkan ini untuk memeriksa struktur data
+      console.log(data);
       setTrans(data);
       setLoading(false);
     } catch (error) {

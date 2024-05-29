@@ -41,7 +41,7 @@ class PengadaanController extends Controller
 
         $validate = Validator::make($storeData, [
             'harga_pengadaan' => 'required|numeric',
-            'id_bahan_baku' => 'required|unique:id',
+            'id_bahan_baku' => 'required',
             'jumlah_bahan_baku' => 'required'
         ]);
 

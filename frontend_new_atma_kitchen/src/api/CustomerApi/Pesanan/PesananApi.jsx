@@ -81,10 +81,28 @@ export const GetMyDetailPesanan = async () => {
       },
     });
     console.log(response.data);
-    return response.data.Pesanan; 
+    return response.data.Pesanan;
   } catch (error) {
     console.error("Error:", error);
     throw error.response.data;
   }
 };
 
+export const sendBukti = async (value) => {
+  try {
+    const response = await useAxios.post(
+      `/pesanan/bukti/${value.get("id_pesanan")}`,
+      value,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};

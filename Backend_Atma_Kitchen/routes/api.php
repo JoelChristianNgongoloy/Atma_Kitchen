@@ -55,6 +55,8 @@ Route::get('/informationprodukdatethen/{id}', [KuotaController::class, 'showKuot
 Route::get('/informationprodukdatebesok/{id}', [KuotaController::class, 'showKuotaWithDatebesok']);
 Route::get('/informationproduk/{id}', [ProdukController::class, 'show']);
 
+
+
 Route::group(['middleware' => ['auth:api', 'owner']], function () {
     // Update Gaji dan Bonus
     Route::put('/pegawaiOwner/{id}', [PegawaiController::class, 'updateOwner']);
@@ -111,6 +113,10 @@ Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::get('/penitip/{id}', [PenitipController::class, 'show']);
     Route::put('/penitip/{id}', [PenitipController::class, 'update']);
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy']);
+
+    // Pesanan
+    Route::get('/pesanan/konfirmasi', [PesananController::class, 'indexKonfirm']);
+    Route::put('/pesanan/konfirmasi/{id}', [PesananController::class, 'updateStatus']);
 });
 
 Route::group(['middleware' => ['auth:api', 'admin']], function () {
@@ -149,6 +155,13 @@ Route::group(['middleware' => ['auth:api', 'admin']], function () {
     Route::delete('/bahanBaku/{id}', [BahanBakuController::class, 'destroy']);
 
     Route::get('/listCustomer', [CustomerController::class, 'index']);
+
+    // Input Jarak
+    Route::post('/pesanan/{id}/updateJarak', [PesananController::class, 'updateInputJarak']);
+    Route::get('/pesanan/inputJarak', [PesananController::class, 'TampilInputJarak']);
+    // Konfirmasi Pesanan
+    Route::get('/pesanan/menungguKonfirmasi', [PesananController::class, 'pesananMenungguKonfirmasi']);
+    Route::post('/pesanan/{id}/konfirmasiPembayaran', [PesananController::class, 'konfirmasiPembayaran']);
 });
 
 
@@ -174,7 +187,7 @@ Route::group(['middleware' => ['auth:api', 'customer']], function () {
     Route::get('/transaksiCetak/{id}', [TransaksiController::class, 'show']);
 
     Route::get('/yourPesanan/{id}', [Detail_PesananController::class, 'showByCustomer']);
-
+    Route::post('/pesanan/bukti/{id}', [CustomerController::class, 'uploadBuktiPembayaran']);
 
     // Route::post('reset/password/initiate', [ResetPasswordCustomerController::class, 'initiateResetPassword']);
 

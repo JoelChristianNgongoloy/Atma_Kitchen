@@ -17,8 +17,8 @@ const TampilPesanan = () => {
       element: <TampilPending />,
     },
     {
-      label: "React",
-      value: "react",
+      label: "Lunas",
+      value: "lunas",
       element: <div></div>,
     },
     {

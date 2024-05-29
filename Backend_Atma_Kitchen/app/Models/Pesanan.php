@@ -22,7 +22,9 @@ class Pesanan extends Model
         'bukti_pembayaran',
         'id_alamat',
         'jenis_pengantaran',
-        'jarak_pengiriman'
+        'jarak_pengiriman',
+        'ongkos_kirim',
+        'jumlah_tip',
     ];
 
     public function customer()

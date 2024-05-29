@@ -57,7 +57,7 @@ class PesananController extends Controller
         $pesanan = Pesanan::create([
             'jumlah_produk' => $storeData["jumlah_produk"],
             'total_harga' => $total_harga,
-            'status_pesanan' => "Pending",
+            'status_pesanan' => "Pesan",
             'tanggal_pesan' =>  now()->setTimezone('Asia/Jakarta')->format('Y-m-d'),
             'tanggal_kirim' => null,
             'id_customer' => $idUser,
@@ -99,8 +99,15 @@ class PesananController extends Controller
             $pesanan->id_alamat = null;
         }
 
+        if ($storeData['jenis_pengantaran'] == 'Ambil Sendiri') {
+            $pesanan->status_pesanan = "Belum Lunas";
+            $pesanan->jarak_pengiriman = 0;
+        } else {
+            $pesanan->status_pesanan = "Pending";
+            $pesanan->jarak_pengiriman = -1;
+        }
+
         $pesanan->jenis_pengantaran = $storeData['jenis_pengantaran'];
-        $pesanan->jarak_pengiriman = -1;
         $pesanan->save();
 
         return response()->json([
@@ -110,6 +117,38 @@ class PesananController extends Controller
     }
 
 
+    public function updateStatus(string $id)
+    {
+
+        $order = Pesanan::find($id);
+
+        if ($order) {
+            $order->status_pesanan = 'Diproses';
+            $order->save();
+
+            return response()->json([
+                'message' => 'Order status updated successfully',
+                'data' => $order
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Order not found',
+            'data' => null
+        ], 404);
+    }
+
+    public function indexKonfirm()
+    {
+        $orders = Pesanan::where('status_pesanan', 'Lunas')
+            ->whereNotNull('bukti_pembayaran')
+            ->get();
+
+        return response()->json([
+            'message' => 'List of orders to be confirmed fetched successfully',
+            'data' => $orders
+        ], 200);
+    }
 
     public function storeByKeranjang(Request $request)
     {
@@ -205,7 +244,7 @@ class PesananController extends Controller
         $promoPoin->save();
 
         $pesanan->total_harga = $totalHargaSetelahDiskon;
-        $pesanan->status_pesanan = "Sudah Dikonfirmasi";
+        // $pesanan->status_pesanan = "Menunggu Konfirmasi";
         $pesanan->save();
 
         $detailPesanan = Detail_Pesanan::where('id_pesanan', $pesanan->id)->get();
@@ -305,5 +344,131 @@ class PesananController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function TampilInputJarak()
+    {
+        // Ambil daftar pesanan yang jarak pengirimannya belum diinput (null)
+        // dan status pesanan adalah "Belum Lunas" serta jenis_pengantaran adalah "Di antar"
+        $TampilInputJarak = Pesanan::with('customer', 'alamat')->where('jarak_pengiriman', -1)
+            ->where('status_pesanan', 'Pending')
+            ->where('jenis_pengantaran', 'Di antar')
+            ->get();
+
+        if ($TampilInputJarak->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan yang perlu input jarak'], 404);
+        }
+
+        return response()->json(['data' => $TampilInputJarak], 200);
+    }
+
+
+    public function updateInputJarak(Request $request, $id_pesanan)
+    {
+        // Temukan pesanan berdasarkan id_pesanan
+        $pesanan = Pesanan::find($id_pesanan);
+
+        if (!$pesanan) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+
+        // Validasi apakah pesanan sudah memiliki jarak pengiriman sebelumnya
+        if ($pesanan->jarak_pengiriman !== -1) {
+            return response()->json(['error' => 'Pesanan sudah memiliki jarak pengiriman'], 400);
+        }
+
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'jarak_pengiriman' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        // Input jarak pengiriman
+        $jarak = $request->jarak_pengiriman;
+
+        $pesanan->jarak_pengiriman = $jarak;
+
+        // Hitung ongkos kirim jika jarak lebih dari 0
+        $ongkos_kirim = 0;
+        if ($jarak > 0) {
+            if ($jarak <= 5) {
+                $ongkos_kirim = 10000;
+            } elseif ($jarak <= 10) {
+                $ongkos_kirim = 15000;
+            } elseif ($jarak <= 15) {
+                $ongkos_kirim = 20000;
+            } else {
+                $ongkos_kirim = 25000;
+            }
+        }
+
+        // Update ongkos kirim pada pesanan
+        $pesanan->ongkos_kirim = $ongkos_kirim;
+        $pesanan->total_harga = $pesanan->total_harga + $ongkos_kirim;
+        $pesanan->status_pesanan = "Belum Lunas";
+
+        // Save pesanan without changing status_pesanan
+        $pesanan->save();
+
+        return response()->json(['message' => 'Jarak pengiriman berhasil diinput dan ongkos kirim diupdate', 'pesanan' => $pesanan], 200);
+    }
+
+    public function pesananMenungguKonfirmasi()
+    {
+        // Mendapatkan semua pesanan yang jarak_pengiriman bukan null, status_pesanan 'Lunas'
+        $pesananMenungguKonfirmasi = Pesanan::with('alamat', 'customer')->whereNot('jarak_pengiriman', -1)
+            ->where('status_pesanan', 'Menunggu Konfirmasi')
+            ->get();
+
+        if ($pesananMenungguKonfirmasi->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan yang perlu dikonfirmasi'], 404);
+        }
+
+        return response()->json(['data' => $pesananMenungguKonfirmasi]);
+    }
+
+    public function konfirmasiPembayaran(Request $request, $id_pesanan)
+    {
+        $validator = Validator::make($request->all(), [
+            'total_bayar' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Fetch the pesanan
+        $pesanan = Pesanan::find($id_pesanan);
+
+        if (!$pesanan) {
+            return response()->json(['message' => 'Pesanan tidak ditemukan'], 404);
+        }
+
+        // Check if the pesanan status is 'Menunggu Konfirmasi'
+        if ($pesanan->status_pesanan != 'Menunggu Konfirmasi') {
+            return response()->json(['message' => 'Pesanan belum Lunas, tidak dapat diubah'], 400);
+        }
+
+        // Memastikan total_bayar mencukupi untuk membayar pesanan
+        if ($request->total_bayar < $pesanan->total_harga) {
+            return response()->json(['message' => 'Jumlah pembayaran kurang'], 400);
+        }
+
+        // Menghitung kelebihan sebagai tip (pemasukan)
+        $pesanan->jumlah_tip = $request->total_bayar - $pesanan->total_harga;
+
+        // Update total_bayar pada pesanan
+        $pesanan->total_bayar = $request->total_bayar;
+
+        // Update status pesanan menjadi 'Dikonfirmasi'
+        $pesanan->status_pesanan = 'Dikonfirmasi';
+
+        // Save pesanan
+        $pesanan->save();
+
+        return response()->json(['message' => 'Pembayaran dikonfirmasi', 'pesanan' => $pesanan]);
     }
 }

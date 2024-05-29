@@ -16,6 +16,8 @@ import ResepAdmin from "../pages/Admin/ResepByAdmin/ResepAdmin";
 import DetailResep from "../pages/Admin/ResepByAdmin/DetailResep";
 import BahanBakuAdmin from "../pages/Admin/BahanBakuByAdmin/BahanBakuAdmin";
 import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
+import InputJarak from "../pages/Admin/InputJarakByAdmin/InputJarak";
+import KonfirmasiPesanan from "../pages/Admin/KonfirmasiPesananByAdmin/KonfirmasiPesanan";
 
 import Register from "../pages/Register";
 import Login from "../pages/Login";
@@ -90,6 +92,14 @@ const router = createBrowserRouter([
       {
         path: "/admin/listCustomer",
         element: <ListCustomer />,
+      },
+      {
+        path: "/admin/inputJarak",
+        element: <InputJarak />,
+      },
+      {
+        path: "/admin/konfirmasiPesanan",
+        element: <KonfirmasiPesanan />,
       },
     ],
   },

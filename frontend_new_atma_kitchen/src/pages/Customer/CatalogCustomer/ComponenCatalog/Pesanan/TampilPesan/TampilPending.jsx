@@ -17,7 +17,7 @@ const TampilPending = () => {
         console.log("Pesanan Data:", data);
         const pendingPesanan = data.filter(
           (item) =>
-            item.status_pesanan === "Pending" &&
+            item.status_pesanan === "Belum Lunas" &&
             (item.jenis_pengantaran === "Di antar" ||
               item.jenis_pengantaran === "Ambil Sendiri")
         );
