@@ -1,71 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
-import NavbarGuest from "../component/NavbarGuest";
 import NavbarCustomer from "../component/NavbarCustomer";
+import Footer from "../component/Footer";
+
+const routes = [
+  {
+    path: "/home",
+    name: "Home",
+  },
+  {
+    path: "/catalog",
+    name: "Catalog",
+  },
+  {
+    path: "/product",
+    name: "Product",
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+  },
+];
 
 const MainLayout = () => {
-  const [token, setToken] = useState("");
-  const routes = token
-    ? [
-        {
-          path: "/home",
-          name: "Home",
-        },
-        {
-          path: "/about",
-          name: "About",
-        },
-        {
-          path: "/product",
-          name: "Product",
-        },
-        {
-          path: "/pesanan",
-          name: "Order",  
-        },
-        {
-          path: "/contact",
-          name: "Contact",
-        },
-      ]
-    : [
-        {
-          path: "/home",
-          name: "Home",
-        },
-        {
-          path: "/about",
-          name: "About",
-        },
-        {
-          path: "/product",
-          name: "Product",
-        },
-        {
-          path: "/contact",
-          name: "Contact",
-        },
-      ];
-
-  useEffect(() => {
-    const tokenDariSS = sessionStorage.getItem("token");
-    setToken(tokenDariSS);
-  }, []);
-
   return (
-    <div className="h-screen bg-gray-400">
+    <div className="flex flex-col min-h-screen">
       <div className="max-h-[768px]">
-        {!token ? (
-          <>
-            <NavbarGuest routes={routes} />
-            <Outlet />
-          </>
-        ) : (
-          <>
-            <NavbarCustomer routes={routes} />
-            <Outlet />
-          </>
-        )}
+        <NavbarCustomer routes={routes} />
+        <div className="flex-grow">
+          <Outlet />
+        </div>
+        <Footer />
       </div>
     </div>
   );

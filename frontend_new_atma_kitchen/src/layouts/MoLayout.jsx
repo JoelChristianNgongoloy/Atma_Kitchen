@@ -8,9 +8,9 @@ import {
   IdentificationIcon,
   UsersIcon,
   ShoppingBagIcon,
+  ShoppingCartIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
-  ShoppingCartIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [

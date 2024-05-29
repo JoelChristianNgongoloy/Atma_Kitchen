@@ -3,7 +3,7 @@ import { Spinner, Card, CardBody } from "@material-tailwind/react";
 import { GetPesanan } from "../../../api/MoApi/apiPesanan";
 import ShowBukti from "./ShowBukti";
 
-const WaitingOrder = () => {
+const IndexPesanan = () => {
     const [isPending, setIsPending] = useState(false);
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -42,7 +42,6 @@ const WaitingOrder = () => {
       ) : (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <h2 className="font-bold text-3xl text-black mb-2">Lunas</h2>
             {orders
               .filter((order) => order.status_pesanan === "Lunas")
               .map((order) => (
@@ -50,7 +49,7 @@ const WaitingOrder = () => {
                   <Card className="mt-4 bg-green-100">
                     <CardBody>
                       <h2 className="font-bold text-xl text-black mb-2">Tanggal Pesan: {order.tanggal_pesan}</h2>
-                      <p className="text-black">Id Pesanan: {order.id_pesanan}</p>
+                      <p className="text-black">Id Pesanan: {order.id}</p>
                       <p className="text-black">Id Customer: {order.id_customer}</p>
                       <p className="text-black">Jumlah Barang: {order.jumlah_produk}</p>
                       <p className="text-black">Total: Rp {order.total_harga}</p>
@@ -62,13 +61,13 @@ const WaitingOrder = () => {
                       </button>
                       <button
                         className="mt-4 ml-4 bg-green-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-green-600"
-                        onClick={() => handleDetailClick(order.id_pesanan)}
+                        onClick={() => handleDetailClick(order.id)}
                       >
                         Terima Pesanan
                       </button>
                       <button
                         className="mt-4 ml-4 bg-red-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-red-600"
-                        onClick={() => handleDetailClick(order.id_pesanan)}
+                        onClick={() => handleDetailClick(order.id)}
                       >
                         Tolak Pesanan
                       </button>
@@ -84,11 +83,11 @@ const WaitingOrder = () => {
           isOpen={showBuktiModal}
           onClose={() => setShowBuktiModal(false)} 
           bukti={selectedOrder.bukti_pembayaran}
-          orderId={selectedOrder.id_pesanan} 
+          orderId={selectedOrder.id} 
         />
       )}
     </div>
   );
 };
 
-export default WaitingOrder;
+export default IndexPesanan;

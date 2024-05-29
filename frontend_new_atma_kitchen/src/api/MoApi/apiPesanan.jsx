@@ -14,12 +14,12 @@ export const GetPesanan = async () => {
     }
 };
 
-export const konfirmasiPesanan = async (id_pesanan) => {
+export const konfirmasiPesanan = async (id) => {
     try {
-        const response = await useAxios.put(`/pesanan/konfirmasi/${id_pesanan}`, {
+        const response = await useAxios.put(`/pesanan/konfirmasi/${id}`, {
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
         });
         return response.data;

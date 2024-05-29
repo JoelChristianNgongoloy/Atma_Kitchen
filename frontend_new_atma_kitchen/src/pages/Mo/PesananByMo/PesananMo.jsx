@@ -22,7 +22,7 @@ const PesananMo = () => {
     return (
       <div>
         <div>
-          <h1 className="font-bold text-3xl mb-4">Penitip By MO</h1>
+          <h1 className="font-bold text-3xl mb-4">Pesanan By MO</h1>
           <p className="w-3/5 mb-4">
             Hai Mo, Silahkan Anda Mengkonfirmasi Pesanan pada menu Show Pesanan ini.
           </p>

@@ -4,7 +4,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+
+import { Toaster } from "react-hot-toast";
 
 import AdminLayout from "../layouts/AdminLayout";
 import WelcomeAdmin from "../pages/Admin/WelcomeAdmin";
@@ -16,12 +17,12 @@ import DetailResep from "../pages/Admin/ResepByAdmin/DetailResep";
 import BahanBakuAdmin from "../pages/Admin/BahanBakuByAdmin/BahanBakuAdmin";
 import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
 
-import Register from "../pages/Register";
-import Login from "../pages/Login";
-import Home from "../pages/Home";
-import About from "../pages/About"
-import Product from "../pages/Product"
-import Contact from "../pages/Contact"
+import Register from "../pages/Home/Register";
+import Login from "../pages/Home/Login";
+import Home from "../pages/Home/Home";
+import About from "../pages/Home/About"
+import Product from "../pages/Home/Product"
+import Contact from "../pages/Home/Contact"
 
 import MoLayout from "../layouts/MoLayout";
 import WelcomeMo from "../pages/Mo/WelcomeMo";
@@ -37,7 +38,18 @@ import GajiOwner from "../pages/Owner/GajiByOwner/GajiOwner";
 import CustomerLayout from "../layouts/CustomerLayout";
 import ProfilCustomer from "../pages/Customer/ProfilCustomer/ProfilCustomer";
 import MainLayout from "../layouts/MainLayout";
-import WaitingOrder from "../pages/Customer/PesananCustomer/WaitingOrder";
+import HomePage from "../pages/Customer/HomeCustomer/HomePage";
+import CatalogPage from "../pages/Customer/CatalogCustomer/CatalogPage";
+import ProdukInformation from "../pages/Customer/CatalogCustomer/ComponenCatalog/ProdukInformation/ProdukInformation";
+import KuotaIndex from "../pages/Admin/ProdukByAdmin/KuotaIndex";
+import ProdukInformationDate from "../pages/Customer/CatalogCustomer/ComponenCatalog/ProdukInformation/ProdukInformationDate";
+import DetailPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesanan";
+import Transaksi from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/Transaksi";
+import KeranjangUser from "../pages/Customer/CatalogCustomer/ComponenCatalog/KeranjangUser";
+import DetailPesananByKeranjang from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesananByKeranjang";
+import AlamatInput from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/AlamatInput";
+import TampilPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/TampilPesanan";
+// import KuotaIndex from "../pages/Admin/HampersByAdmin/KuotaIndex";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/produk",
         element: <ProdukAdmin />,
+      },
+      {
+        path: "/admin/produk/kuotaproduk/:id",
+        element: <KuotaIndex />,
       },
       {
         path: "/admin/hampers",
@@ -135,8 +151,48 @@ const router = createBrowserRouter([
         element: <ProfilCustomer />,
       },
       {
-        path: "/pesanan",
-        element: <WaitingOrder />,
+        path: "/home",
+        element: <HomePage />,
+      },
+      {
+        path: "/catalog",
+        element: <CatalogPage />,
+      },
+      {
+        path: "/informationprodukdate/:id",
+        element: <ProdukInformationDate />,
+      },
+      {
+        path: "/informationproduk/:id",
+        element: <ProdukInformation />,
+      },
+      {
+        path: "/detail_pesan/:id",
+        element: <DetailPesanan />,
+      },
+      {
+        path: "/detail_pesanAll/:id",
+        element: <DetailPesananByKeranjang />,
+      },
+      {
+        path: "/transaksiCetak/:id",
+        element: <Transaksi />,
+      },
+      {
+        path: "/showInputAlamat/:id",
+        element: <AlamatInput />,
+      },
+      {
+        path: "/transaksi",
+        element: <Transaksi />,
+      },
+      {
+        path: "/keranjangUser",
+        element: <KeranjangUser />,
+      },
+      {
+        path: "/order",
+        element: <TampilPesanan />,
       },
     ],
   },
@@ -175,6 +231,17 @@ const router = createBrowserRouter([
 const AppRouter = () => {
   return (
     <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "z-50",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <RouterProvider router={router} />
     </>
   );
