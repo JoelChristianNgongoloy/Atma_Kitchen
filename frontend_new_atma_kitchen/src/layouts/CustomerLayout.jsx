@@ -2,22 +2,20 @@ import { Outlet } from "react-router-dom";
 
 import NavbarCustomer from "../component/NavbarCustomer";
 
+import Footer from "../component/Footer";
+
 const routes = [
   {
     path: "/home",
     name: "Home",
   },
   {
-    path: "/about",
-    name: "About",
+    path: "/catalog",
+    name: "Catalog",
   },
   {
     path: "/product",
     name: "Product",
-  },
-  {
-    path: "/order",
-    name: "Order",
   },
   {
     path: "/contact",
@@ -26,11 +24,10 @@ const routes = [
 ];
 const CustomerLayout = ({ children }) => {
   return (
-    <div className="h-screen bg-gray-400">
-      <div className="max-h-[768px]">
-        <NavbarCustomer routes={routes} />
-        {children ? children : <Outlet />}
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <NavbarCustomer routes={routes}/>
+      <div className="flex-grow">{children ? children : <Outlet />}</div>
+      <Footer />
     </div>
   );
 };

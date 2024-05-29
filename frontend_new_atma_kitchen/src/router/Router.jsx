@@ -4,7 +4,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+
+import { Toaster } from "react-hot-toast";
 
 import AdminLayout from "../layouts/AdminLayout";
 import WelcomeAdmin from "../pages/Admin/WelcomeAdmin";
@@ -15,6 +16,8 @@ import ResepAdmin from "../pages/Admin/ResepByAdmin/ResepAdmin";
 import DetailResep from "../pages/Admin/ResepByAdmin/DetailResep";
 import BahanBakuAdmin from "../pages/Admin/BahanBakuByAdmin/BahanBakuAdmin";
 import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
+import InputJarak from "../pages/Admin/InputJarakByAdmin/InputJarak";
+import KonfirmasiPesanan from "../pages/Admin/KonfirmasiPesananByAdmin/KonfirmasiPesanan";
 
 import Register from "../pages/Register";
 import Login from "../pages/Login";
@@ -32,6 +35,18 @@ import GajiOwner from "../pages/Owner/GajiByOwner/GajiOwner";
 import CustomerLayout from "../layouts/CustomerLayout";
 import ProfilCustomer from "../pages/Customer/ProfilCustomer/ProfilCustomer";
 import MainLayout from "../layouts/MainLayout";
+import HomePage from "../pages/Customer/HomeCustomer/HomePage";
+import CatalogPage from "../pages/Customer/CatalogCustomer/CatalogPage";
+import ProdukInformation from "../pages/Customer/CatalogCustomer/ComponenCatalog/ProdukInformation/ProdukInformation";
+import KuotaIndex from "../pages/Admin/ProdukByAdmin/KuotaIndex";
+import ProdukInformationDate from "../pages/Customer/CatalogCustomer/ComponenCatalog/ProdukInformation/ProdukInformationDate";
+import DetailPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesanan";
+import Transaksi from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/Transaksi";
+import KeranjangUser from "../pages/Customer/CatalogCustomer/ComponenCatalog/KeranjangUser";
+import DetailPesananByKeranjang from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesananByKeranjang";
+import AlamatInput from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/AlamatInput";
+import TampilPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/TampilPesanan";
+// import KuotaIndex from "../pages/Admin/HampersByAdmin/KuotaIndex";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/produk",
         element: <ProdukAdmin />,
+      },
+      {
+        path: "/admin/produk/kuotaproduk/:id",
+        element: <KuotaIndex />,
       },
       {
         path: "/admin/hampers",
@@ -73,6 +92,14 @@ const router = createBrowserRouter([
       {
         path: "/admin/listCustomer",
         element: <ListCustomer />,
+      },
+      {
+        path: "/admin/inputJarak",
+        element: <InputJarak />,
+      },
+      {
+        path: "/admin/konfirmasiPesanan",
+        element: <KonfirmasiPesanan />,
       },
     ],
   },
@@ -124,6 +151,50 @@ const router = createBrowserRouter([
         path: "/profil",
         element: <ProfilCustomer />,
       },
+      {
+        path: "/home",
+        element: <HomePage />,
+      },
+      {
+        path: "/catalog",
+        element: <CatalogPage />,
+      },
+      {
+        path: "/informationprodukdate/:id",
+        element: <ProdukInformationDate />,
+      },
+      {
+        path: "/informationproduk/:id",
+        element: <ProdukInformation />,
+      },
+      {
+        path: "/detail_pesan/:id",
+        element: <DetailPesanan />,
+      },
+      {
+        path: "/detail_pesanAll/:id",
+        element: <DetailPesananByKeranjang />,
+      },
+      {
+        path: "/transaksiCetak/:id",
+        element: <Transaksi />,
+      },
+      {
+        path: "/showInputAlamat/:id",
+        element: <AlamatInput />,
+      },
+      {
+        path: "/transaksi",
+        element: <Transaksi />,
+      },
+      {
+        path: "/keranjangUser",
+        element: <KeranjangUser />,
+      },
+      {
+        path: "/order",
+        element: <TampilPesanan />,
+      },
     ],
   },
   {
@@ -138,6 +209,14 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
+      // {
+      //   path: "/home",
+      //   element: <HomePage />,
+      // },
+      // {
+      //   path: "/catalog",
+      //   element: <CatalogPage />,
+      // },
     ],
   },
 ]);
@@ -145,6 +224,17 @@ const router = createBrowserRouter([
 const AppRouter = () => {
   return (
     <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "z-50",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <RouterProvider router={router} />
     </>
   );

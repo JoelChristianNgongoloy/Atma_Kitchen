@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Pengadaan;
 use App\Models\BahanBaku;
+use App\Models\Detail_Pengadaan;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class PengadaanController extends Controller
@@ -16,17 +17,18 @@ class PengadaanController extends Controller
      */
     public function index()
     {
-        $pengadaan = Pengadaan::with(['BahanBaku'])->get();
-        if (count($pengadaan) > 0) {
+        $detailPengadaan = Detail_Pengadaan::with('bahanBaku', 'pengadaan')->get();
+
+        if (count($detailPengadaan) > 0) {
             return response([
-                'message' => 'Retrieve All Success',
-                'data' => $pengadaan
+                'message' => 'Retrieved All Succes',
+                'data' => $detailPengadaan
             ], 200);
         }
 
         return response([
-            'message' => 'Pengadaan Empty',
-            'data' => null
+            'message' => 'Pengadaan Not Found',
+            'data' => null,
         ], 400);
     }
 
@@ -39,18 +41,31 @@ class PengadaanController extends Controller
 
         $validate = Validator::make($storeData, [
             'harga_pengadaan' => 'required|numeric',
-            'tanggal_pengadaan' => 'required|date',
             'id_bahan_baku' => 'required',
+            'jumlah_bahan_baku' => 'required'
         ]);
+
+        $totalHarga = $storeData['harga_pengadaan'] * $storeData['jumlah_bahan_baku'];
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400);
         }
 
-        $pengadaan = Pengadaan::create($storeData);
+        $pengadaan = Pengadaan::create([
+            'harga_pengadaan' => $storeData['harga_pengadaan'],
+            'tanggal_pengadaan' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d'),
+        ]);
+
+        $detailPengadaan = Detail_Pengadaan::create([
+            'id_bahan_baku' => $storeData['id_bahan_baku'],
+            'id_pengadaan' => $pengadaan->id,
+            'total_harga' => $totalHarga,
+            'jumlah_bahan_baku' => $storeData['jumlah_bahan_baku']
+        ]);
+
         return response([
             'message' => 'Create Pengadaan Success',
-            'data' => $pengadaan
+            'data' => $detailPengadaan
         ], 200);
     }
 
@@ -59,17 +74,16 @@ class PengadaanController extends Controller
      */
     public function show(string $id)
     {
-        $pengadaan = Pengadaan::find($id);
-
-        if (!is_null($pengadaan)) {
+        $detailPengadaan = Detail_Pengadaan::with(['bahanBaku', 'pengadaan'])->where('id_pengadaan', $id)->get();
+        if (count($detailPengadaan) > 0) {
             return response([
-                'message' => 'Pengadaan Found',
-                'data' => $pengadaan
+                'message' => 'Retrieve All Success',
+                'data' => $detailPengadaan
             ], 200);
         }
 
         return response([
-            'message' => 'Pengadaan Not Found',
+            'message' => 'Pengadaan Empty',
             'data' => null
         ], 400);
     }
@@ -94,7 +108,7 @@ class PengadaanController extends Controller
             'tanggal_pengadaan' => 'date',
         ]);
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400);
         }
 
@@ -113,14 +127,14 @@ class PengadaanController extends Controller
     {
         $pengadaan = Pengadaan::find($id);
 
-        if(is_null($pengadaan)){
+        if (is_null($pengadaan)) {
             return response([
                 'message' => 'Pengadaan Not Found',
                 'data' => null
             ], 400);
         }
 
-        if($pengadaan->delete()){
+        if ($pengadaan->delete()) {
             return response([
                 'message' => 'Delete Pengadaan Success',
                 'data' => $pengadaan

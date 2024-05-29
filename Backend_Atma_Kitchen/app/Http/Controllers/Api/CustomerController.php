@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -90,5 +92,42 @@ class CustomerController extends Controller
             'message' => 'User not Logged in',
             'data' => null
         ], 400);
+    }
+
+    public function uploadBuktiPembayaran(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'id_pesanan' => 'required|integer',
+            'bukti_pembayaran' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validate->fails()) {
+            return response(['message' => $validate->errors()], 400);
+        }
+
+        $pesanan = Pesanan::find($request->id_pesanan);
+        if (is_null($pesanan)) {
+            return response(['message' => 'Order Not Found'], 404);
+        }
+
+        if ($request->hasFile('bukti_pembayaran')) {
+            $uploadFolder = 'payments';
+            $image = $request->file('bukti_pembayaran');
+            $image_uploaded_path = $image->store($uploadFolder, 'public');
+            $uploadedImageResponse = basename($image_uploaded_path);
+
+            if (!is_null($pesanan->bukti_pembayaran)) {
+                Storage::disk('public')->delete('payments/' . $pesanan->bukti_pembayaran);
+            }
+
+            $pesanan->bukti_pembayaran = $uploadedImageResponse;
+        }
+        $pesanan->status_pesanan = 'Menunggu Konfirmasi Pembayaran';
+        $pesanan->save();
+
+        return response([
+            'message' => 'Bukti Pembayaran ' . ($request->hasFile('bukti_pembayaran') ? 'Updated' : 'Uploaded') . ' Successfully',
+            'data' => $pesanan,
+        ], 200);
     }
 }

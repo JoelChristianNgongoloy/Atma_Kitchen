@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import NavbarCustomer from "../component/NavbarCustomer";
+import Footer from "../component/Footer";
 
 const routes = [
   {
@@ -8,16 +9,12 @@ const routes = [
     name: "Home",
   },
   {
-    path: "/about",
-    name: "About",
+    path: "/catalog",
+    name: "Catalog",
   },
   {
     path: "/product",
     name: "Product",
-  },
-  {
-    path: "/order",
-    name: "Order",
   },
   {
     path: "/contact",
@@ -27,10 +24,13 @@ const routes = [
 
 const MainLayout = () => {
   return (
-    <div className="h-screen bg-gray-400">
+    <div className="flex flex-col min-h-screen">
       <div className="max-h-[768px]">
         <NavbarCustomer routes={routes} />
-        <Outlet />
+        <div className="flex-grow">
+          <Outlet />
+        </div>
+        <Footer />
       </div>
     </div>
   );
