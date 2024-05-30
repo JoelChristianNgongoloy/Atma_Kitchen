@@ -4,7 +4,7 @@ import { GetMyDetailPesanan } from "../../../../../../api/CustomerApi/Pesanan/Pe
 import { useNavigate } from "react-router-dom";
 import { getFotoProduk } from "../../../../../../api";
 
-const TampilPending = () => {
+const TampilMenungguKonfirmasi = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pesanan, setPesanan] = useState([]);
 
@@ -16,10 +16,7 @@ const TampilPending = () => {
       .then((data) => {
         console.log("Pesanan Data:", data);
         const pendingPesanan = data.filter(
-          (item) =>
-            item.status_pesanan === "Pending" &&
-            (item.jenis_pengantaran === "Di antar" ||
-              item.jenis_pengantaran === "Ambil Sendiri")
+          (item) => item.status_pesanan === "Menunggu Konfirmasi Pembayaran"
         );
         setPesanan(pendingPesanan);
         setIsLoading(false);
@@ -29,7 +26,6 @@ const TampilPending = () => {
         setIsLoading(false);
       });
   }, []);
-
   return (
     <div>
       {isLoading ? (
@@ -47,7 +43,7 @@ const TampilPending = () => {
                 <div
                   key={index}
                   className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 cursor-pointer"
-                  onClick={() => navigate(`/detail_pesanAll/${pesananItem.id}`)}
+                  onClick={() => navigate(`/transaksiCetak/${pesananItem.id}`)}
                 >
                   <div className="w-full flex justify-between">
                     <div></div>
@@ -117,10 +113,12 @@ const TampilPending = () => {
           )}
         </>
       ) : (
-        <div className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 text-center"><h2>Kosong</h2></div>
+        <div className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 text-center">
+          <h2>Kosong</h2>
+        </div>
       )}
     </div>
   );
 };
 
-export default TampilPending;
+export default TampilMenungguKonfirmasi;

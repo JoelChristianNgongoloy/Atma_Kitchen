@@ -28,6 +28,7 @@ import PegawaiMo from "../pages/Mo/PegawaiByMo/PegawaiMo";
 import PenitipMo from "../pages/Mo/PenitipByMo/PenitipMo";
 import PengeluaranMo from "../pages/Mo/PengeluaranByMo/PengeluaranMo";
 import PembelianMo from "../pages/Mo/PembelianByMo/PembelianMo";
+import PesananMo from "../pages/Mo/PesananByMo/PesananMo";
 
 import OwnerLayout from "../layouts/OwnerLayout";
 import WelcomeOwner from "../pages/Owner/WelcomeOwner";
@@ -126,6 +127,10 @@ const router = createBrowserRouter([
       {
         path: "/mo/pengeluaran",
         element: <PengeluaranMo />,
+      },
+      {
+        path: "/mo/pesanan",
+        element: <PesananMo />,
       },
     ],
   },

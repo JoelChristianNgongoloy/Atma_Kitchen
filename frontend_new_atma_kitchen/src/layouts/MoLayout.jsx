@@ -8,6 +8,7 @@ import {
   IdentificationIcon,
   UsersIcon,
   ShoppingBagIcon,
+  ShoppingCartIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
@@ -32,6 +33,11 @@ const routes = [
     path: "/mo/penitip",
     name: "Kelola Penitip",
     icon: <UsersIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/pesanan",
+    name: "Kelola Pesanan",
+    icon: <ShoppingCartIcon className="h-5 w-5" />,
   },
   {
     path: "/mo/pembelian",

@@ -25,8 +25,11 @@ const Transaksi = () => {
     setLoading(true);
     try {
       const data = await GetTransaksi(id);
-      console.log(data);
-      setTrans(data);
+      console.log("Ini Data Transaksi", data);
+      const trans = data.filter(
+        (item) => (item.pesanan.status_pesanan === "Konfirmasi")
+      );
+      setTrans(trans);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -54,7 +57,7 @@ const Transaksi = () => {
   }
 
   if (!trans || trans.length === 0) {
-    return <div className="text-center">Data Transaksi tidak tersedia.</div>;
+    return <div className="text-center">Sabar Yah Lagi di Konfirmasi.</div>;
   }
 
   // Mengelompokkan transaksi berdasarkan id_pesanan
@@ -67,7 +70,7 @@ const Transaksi = () => {
     } else {
       acc.push({ idPesanan, transactions: [curr] });
     }
- 
+
     return acc;
   }, []);
 

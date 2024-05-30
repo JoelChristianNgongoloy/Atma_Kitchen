@@ -140,7 +140,7 @@ class PesananController extends Controller
 
     public function indexKonfirm()
     {
-        $orders = Pesanan::where('status_pesanan', 'Lunas')
+        $orders = Pesanan::where('status_pesanan', 'Menunggu Konfirmasi Pembayaran')
             ->whereNotNull('bukti_pembayaran')
             ->get();
 
@@ -420,7 +420,7 @@ class PesananController extends Controller
     {
         // Mendapatkan semua pesanan yang jarak_pengiriman bukan null, status_pesanan 'Lunas'
         $pesananMenungguKonfirmasi = Pesanan::with('alamat', 'customer')->whereNot('jarak_pengiriman', -1)
-            ->where('status_pesanan', 'Menunggu Konfirmasi')
+            ->where('status_pesanan', 'Menunggu Konfirmasi Pembayaran')
             ->get();
 
         if ($pesananMenungguKonfirmasi->isEmpty()) {
@@ -448,7 +448,7 @@ class PesananController extends Controller
         }
 
         // Check if the pesanan status is 'Menunggu Konfirmasi'
-        if ($pesanan->status_pesanan != 'Menunggu Konfirmasi') {
+        if ($pesanan->status_pesanan != 'Menunggu Konfirmasi Pembayaran') {
             return response()->json(['message' => 'Pesanan belum Lunas, tidak dapat diubah'], 400);
         }
 
@@ -461,10 +461,10 @@ class PesananController extends Controller
         $pesanan->jumlah_tip = $request->total_bayar - $pesanan->total_harga;
 
         // Update total_bayar pada pesanan
-        $pesanan->total_bayar = $request->total_bayar;
+        $pesanan->total_harga = $request->total_bayar;
 
         // Update status pesanan menjadi 'Dikonfirmasi'
-        $pesanan->status_pesanan = 'Dikonfirmasi';
+        $pesanan->status_pesanan = 'Konfirmasi';
 
         // Save pesanan
         $pesanan->save();

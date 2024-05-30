@@ -4,7 +4,7 @@ import { GetMyDetailPesanan } from "../../../../../../api/CustomerApi/Pesanan/Pe
 import { useNavigate } from "react-router-dom";
 import { getFotoProduk } from "../../../../../../api";
 
-const TampilPending = () => {
+const TampilBelumLunas = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pesanan, setPesanan] = useState([]);
 
@@ -17,9 +17,7 @@ const TampilPending = () => {
         console.log("Pesanan Data:", data);
         const pendingPesanan = data.filter(
           (item) =>
-            item.status_pesanan === "Pending" &&
-            (item.jenis_pengantaran === "Di antar" ||
-              item.jenis_pengantaran === "Ambil Sendiri")
+            item.status_pesanan === "Belum Lunas"
         );
         setPesanan(pendingPesanan);
         setIsLoading(false);
@@ -117,10 +115,12 @@ const TampilPending = () => {
           )}
         </>
       ) : (
-        <div className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 text-center"><h2>Kosong</h2></div>
+        <div className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 text-center">
+          <h2>Kosong</h2>
+        </div>
       )}
     </div>
   );
 };
 
-export default TampilPending;
+export default TampilBelumLunas;
