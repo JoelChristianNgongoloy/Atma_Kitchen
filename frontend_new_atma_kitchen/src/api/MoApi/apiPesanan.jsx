@@ -15,9 +15,9 @@ export const GetPesanan = async () => {
     }
 };
 
-export const konfirmasiPesanan = async (id) => {
+export const konfirmasiPesanan = async (values) => {
     try {
-        const response = await useAxios.put(`/pesanan/konfirmasi/${id}`, {
+        const response = await useAxios.put(`/pesanan/konfirmasi/${values}`, values, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${sessionStorage.getItem("token")}`,

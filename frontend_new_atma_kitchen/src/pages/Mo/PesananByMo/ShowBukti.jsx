@@ -11,6 +11,7 @@ import { konfirmasiPesanan } from "../../../api/MoApi/apiPesanan";
 
 const ShowBukti = ({ isOpen, onClose, bukti, orderId }) => {
   const buktiURL = getBukti(bukti); // Get the URL of the bukti_pembayaran image
+
   const handleKonfirmasi = () => {
     console.log("Order detail clicked for order ID:", orderId);
     konfirmasiPesanan(orderId)
@@ -24,13 +25,13 @@ const ShowBukti = ({ isOpen, onClose, bukti, orderId }) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} handler={onClose} size="xl" className="overflow-auto">
       <DialogHeader>Bukti Pembayaran</DialogHeader>
       <DialogBody>
         <img
           src={buktiURL}
           alt="Bukti Pembayaran"
-          style={{ maxWidth: "100%", maxHeight: "100%" }}
+          className="w-full h-auto max-h-96 object-contain"
         />
       </DialogBody>
       <DialogFooter>

@@ -106,6 +106,8 @@ Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::post('/pengadaan', [PengadaanController::class, 'store']);
     Route::get('/pembelian', [PengadaanController::class, 'index']);
     Route::get('/bahanBakuMo', [BahanBakuController::class, 'indexForMo']);
+    Route::put('/pengadaan/{id}', [PengadaanController::class, 'update']);
+
 
     // Penitip
     Route::get('/penitip', [PenitipController::class, 'index']);

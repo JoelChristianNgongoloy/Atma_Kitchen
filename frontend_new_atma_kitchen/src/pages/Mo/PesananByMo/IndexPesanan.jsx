@@ -43,9 +43,12 @@ const IndexPesanan = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             {orders
-              .filter((order) => order.status_pesanan === "Lunas")
-              .map((order) => (
-                <div key={order.id_pesanan} className="mb-4">
+              .filter(
+                (order) =>
+                  order.status_pesanan === "Menunggu Konfirmasi Pembayaran"
+              )
+              .map((order, index) => (
+                <div key={index} className="mb-4">
                   <Card className="mt-4 bg-green-100">
                     <CardBody>
                       <h2 className="font-bold text-xl text-black mb-2">

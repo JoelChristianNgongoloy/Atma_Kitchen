@@ -119,10 +119,9 @@ class PesananController extends Controller
 
     public function updateStatus(string $id)
     {
-
         $order = Pesanan::find($id);
 
-        if ($order) {
+        if ($order !== null) {
             $order->status_pesanan = 'Diproses';
             $order->save();
 
