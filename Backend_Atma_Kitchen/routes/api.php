@@ -57,10 +57,15 @@ Route::get('/informationproduk/{id}', [ProdukController::class, 'show']);
 
 
 
+Route::post('/pesanan/notifHp', [PesananController::class, 'tampilNotifHp']);
+
+
 Route::group(['middleware' => ['auth:api', 'owner']], function () {
     // Update Gaji dan Bonus
     Route::put('/pegawaiOwner/{id}', [PegawaiController::class, 'updateOwner']);
     Route::get('/pegawaiOwner', [PegawaiController::class, 'indexOwner']);
+    Route::post('/pesanan/laporanPenjualanBulanan', [PesananController::class, 'laporanPenjualanBulanan']);
+    Route::post('/detail_pesanan/laporanPenggunaanBahanBaku', [Detail_PesananController::class, 'laporanPenggunaanBahanBaku']);
 });
 Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::post('/change-password', [ChangePasswordPegawaiController::class, 'changePasswordPegawai']);
@@ -113,6 +118,9 @@ Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::get('/penitip/{id}', [PenitipController::class, 'show']);
     Route::put('/penitip/{id}', [PenitipController::class, 'update']);
     Route::delete('/penitip/{id}', [PenitipController::class, 'destroy']);
+
+    Route::post('/pesanan/laporanPenjualanBulananMo', [PesananController::class, 'laporanPenjualanBulanan']);
+    Route::post('/detail_pesanan/laporanPenggunaanBahanBakuMo', [Detail_PesananController::class, 'laporanPenggunaanBahanBaku']);
 });
 
 Route::group(['middleware' => ['auth:api', 'admin']], function () {
@@ -158,7 +166,16 @@ Route::group(['middleware' => ['auth:api', 'admin']], function () {
     // Konfirmasi Pesanan
     Route::get('/pesanan/menungguKonfirmasi', [PesananController::class, 'pesananMenungguKonfirmasi']);
     Route::post('/pesanan/{id}/konfirmasiPembayaran', [PesananController::class, 'konfirmasiPembayaran']);
+
+    Route::get('/pesanan/tampilDaftarPesanan', [PesananController::class, 'tampilDaftarPesanan']);
+    Route::put('/pesanan/{id}/updateDaftarPesanan', [PesananController::class, 'updateDaftarPesanan']);
+    Route::put('/pesanan/{id}/ubahStatusPesanan', [PesananController::class, 'ubahStatusPesanan']);
+    Route::get('/pesanan/tampilSelesaikanPesanan', [PesananController::class, 'tampilSelesaikanPesanan']);
+
+    Route::get('/pesanan/tampilPesananTelatBayar', [PesananController::class, 'tampilPesananTelatBayar']);
+    Route::put('/pesanan/pembatalanTransaksiTelatBayar/{id}', [PesananController::class, 'pembatalanTransaksiTelatBayar']);
 });
+
 
 
 Route::group(['middleware' => ['auth:api', 'customer']], function () {
@@ -184,8 +201,10 @@ Route::group(['middleware' => ['auth:api', 'customer']], function () {
 
     Route::get('/yourPesanan/{id}', [Detail_PesananController::class, 'showByCustomer']);
 
-
     // Route::post('reset/password/initiate', [ResetPasswordCustomerController::class, 'initiateResetPassword']);
 
     // Route::post('reset/password/{reset_key}', [ResetPasswordCustomerController::class, 'resetPassword']);
+
+    Route::get('/pesanan/tampilKonfirmasiPenerimaan', [PesananController::class, 'tampilKonfirmasiPenerimaan']);
+    Route::put('/pesanan/{id}/customerUpdateStatus', [PesananController::class, 'customerUpdateStatus']);
 });

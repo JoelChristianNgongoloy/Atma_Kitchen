@@ -18,6 +18,8 @@ import BahanBakuAdmin from "../pages/Admin/BahanBakuByAdmin/BahanBakuAdmin";
 import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
 import InputJarak from "../pages/Admin/InputJarakByAdmin/InputJarak";
 import KonfirmasiPesanan from "../pages/Admin/KonfirmasiPesananByAdmin/KonfirmasiPesanan";
+import LaporanPenjualanBulanan from "../pages/Owner/LaporanPenjualanBulanan";
+import LaporanPenjualanBulananMo from "../pages/Mo/LaporanPenjualanBulananMo";
 
 import Register from "../pages/Register";
 import Login from "../pages/Login";
@@ -47,6 +49,12 @@ import DetailPesananByKeranjang from "../pages/Customer/CatalogCustomer/Componen
 import AlamatInput from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/AlamatInput";
 import TampilPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/TampilPesanan";
 // import KuotaIndex from "../pages/Admin/HampersByAdmin/KuotaIndex";
+import UpdateStatus from "../pages/Admin/UpdateStatusByAdmin/UpdateStatus";
+import UpdateSelesaikanPesanan from "../pages/Admin/UpdateStatusByAdmin/UpdateSelesaikanPesanan";
+import PembatalanPesanan from "../pages/Admin/PembatalanByAdmin/PembatalanPesanan";
+import KonfirmasiPesananByCustomer from "../pages/Customer/KonfirmasiPesanan/KonfirmasiPesananByCustomer";
+import LaporanPenggunaanBahanBakuMo from "../pages/Mo/LaporanPenggunaanBahanBakuMo";
+
 
 const router = createBrowserRouter([
   {
@@ -101,6 +109,18 @@ const router = createBrowserRouter([
         path: "/admin/konfirmasiPesanan",
         element: <KonfirmasiPesanan />,
       },
+      {
+        path: "/admin/updateStatus",
+        element: <UpdateStatus />,
+      },
+      {
+        path: "/admin/updateSelesaikanPesanan",
+        element: <UpdateSelesaikanPesanan />,
+      },
+      {
+        path: "/admin/pembatalanPesanan",
+        element: <PembatalanPesanan />,
+      },
     ],
   },
   {
@@ -127,6 +147,14 @@ const router = createBrowserRouter([
         path: "/mo/pengeluaran",
         element: <PengeluaranMo />,
       },
+      {
+        path: "/mo/laporanPenjualanBulananMo",
+        element: <LaporanPenjualanBulananMo />,
+      },
+      {
+        path: "/mo/laporanPenggunaanBahanBakuMo",
+        element: <LaporanPenggunaanBahanBakuMo />,
+      }
     ],
   },
   {
@@ -141,6 +169,10 @@ const router = createBrowserRouter([
         path: "/owner/gaji",
         element: <GajiOwner />,
       },
+      {
+        path: "/owner/laporanPenjualanBulanan",
+        element: <LaporanPenjualanBulanan />,
+      }
     ],
   },
   {
@@ -194,6 +226,10 @@ const router = createBrowserRouter([
       {
         path: "/order",
         element: <TampilPesanan />,
+      },
+      {
+        path: "/konfirmasiPesananByCustomer",
+        element: <KonfirmasiPesananByCustomer />,
       },
     ],
   },

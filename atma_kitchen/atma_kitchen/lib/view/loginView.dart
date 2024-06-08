@@ -1,59 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:atma_kitchen/services/auth_service.dart';
 import 'package:atma_kitchen/view/Home/customerView.dart';
 import 'package:atma_kitchen/view/Home/moView.dart';
 import 'package:atma_kitchen/view/registerView.dart';
-import 'package:flutter/material.dart';
-import 'package:atma_kitchen/roundBtn.dart';
-import 'package:atma_kitchen/services/auth_service.dart';
-import 'package:atma_kitchen/services/globals.dart';
-import 'package:http/http.dart' as http;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
   @override
-  _loginViewState createState() => _loginViewState();
+  _LoginViewState createState() => _LoginViewState();
 }
 
-class _loginViewState extends State<LoginView> {
+class _LoginViewState extends State<LoginView> {
   String token = '';
   String _email = '';
   String _password = '';
+  int id = 0; // Ubah tipe data id menjadi int
 
-  loginPressed() async {
+  loginPressed(BuildContext context) async {
     if (_email.isNotEmpty && _password.isNotEmpty) {
-      Map<String, dynamic> responseData =
-          await AuthServices.login(_email, _password);
-      if (responseData.containsKey('data')) {
-        Map<String, dynamic> userData = responseData['data'];
-        token = responseData['token'];
-        if (userData.containsKey('id_role')) {
-          if (userData['id_role'] == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => MOView(token),
-              ),
-            );
-          } else if (userData['id_role'] == 4) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => const CustomerView(),
-              ),
-            );
-          } else {
-            errorSnackBar(context, 'tidak ada akun yang sesuai');
+      try {
+        Map<String, dynamic> responseData =
+            await AuthServices.login(_email, _password);
+        if (responseData.containsKey('data')) {
+          Map<String, dynamic> userData = responseData['data'];
+          setState(() {
+            token = responseData['token'];
+          });
+          if (userData.containsKey('id_role')) {
+            if (userData['id_role'] == 3) {
+              // Tidak ada kebutuhan untuk menggunakan BuildContext di sini
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MOView(token),
+                ),
+              );
+            } else if (userData['id_role'] == 4) {
+              // Tidak ada kebutuhan untuk menggunakan BuildContext di sini
+              id = userData['id'] as int; // Simpan id sebagai int
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CustomerView(token, id.toString()), // Konversi id menjadi String
+                ),
+              );
+            } else {
+              errorSnackBar(context, 'tidak ada akun yang sesuai');
+            }
           }
         }
+      } catch (e) {
+        print('Login error: $e');
+        errorSnackBar(context, 'Gagal login: $e');
       }
     } else {
       errorSnackBar(context, 'Email dan Password tidak boleh kosong');
     }
   }
 
-  login() {
-    print('email: $_email');
-    print('password: $_password');
+  errorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
@@ -92,18 +104,19 @@ class _loginViewState extends State<LoginView> {
               },
             ),
             const SizedBox(height: 16.0),
-            RoundBtn(
-              text: 'Login',
-              onPressed: () => loginPressed(),
+            ElevatedButton(
+              onPressed: () => loginPressed(context),
+              child: const Text('Login'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const RegisterView(),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const RegisterView(),
+                  ),
+                );
               },
               child: const Text(
                 'Dont have an account? Sign in here!',

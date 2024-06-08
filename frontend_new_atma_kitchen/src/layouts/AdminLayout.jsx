@@ -12,6 +12,9 @@ import {
   UserGroupIcon,
   MapPinIcon,
   CheckCircleIcon,
+  PencilIcon,
+  PlusIcon,
+  StopIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -54,7 +57,22 @@ const routes = [
     path: "/admin/konfirmasiPesanan",
     name: "Konfirmasi Pesanan",
     icon: <CheckCircleIcon className="h-5 w-5" />,
-  }
+  },
+  {
+    path: "/admin/updateStatus",
+    name: "Update Status Pesanan",
+    icon: <PencilIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/admin/updateSelesaikanPesanan",
+    name: "Selesaikan Pesanan",
+    icon: <PlusIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/admin/pembatalanPesanan",
+    name: "Batalkan Pesanan",
+    icon: <StopIcon className="h-5 w-5" />,
+  },
 ];
 
 const AdminLayout = ({ children }) => {

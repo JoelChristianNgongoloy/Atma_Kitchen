@@ -13,6 +13,8 @@ use App\Models\Pesanan;
 use App\Models\User;
 // use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\BahanBaku;
+use App\Models\Detail_Pengadaan;
 
 
 class Detail_PesananController extends Controller
@@ -126,5 +128,64 @@ class Detail_PesananController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function laporanPenggunaanBahanBaku(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+        ]);
+
+        // Ambil data pesanan yang memenuhi kriteria status dan rentang tanggal
+        $pesanan = Pesanan::whereIn('status_pesanan', ['Selesai', 'Siap di pick up', 'Sedang dikirim', 'Dikonfirmasi', 'Diproses'])
+            ->whereBetween('tanggal_pesan', [$validated['tanggal_mulai'], $validated['tanggal_selesai']])
+            ->with('detailPesanan.detailResep.bahanBaku') // Eager loading untuk detail resep dan bahan baku
+            ->get();
+
+        if ($pesanan->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan dengan status yang sesuai dan rentang tanggal yang dipilih'], 404);
+        }
+
+        $result = [];
+
+        foreach ($pesanan as $p) {
+            $detail_penggunaan_bahan = [];
+
+            foreach ($p->detailPesanan as $dp) {
+                foreach ($dp->detailResep as $detailResep) {
+                    $bahan_baku = BahanBaku::find($detailResep->id_bahan_baku);
+                    $satuan = $detailResep->satuan;
+                    $jumlah = $detailResep->jumlah;
+
+                    $detail_penggunaan_bahan[] = [
+                        'nama_bahan_baku' => $bahan_baku ? $bahan_baku->nama_bahan_baku : null,
+                        'satuan' => $satuan,
+                        'jumlah' => $jumlah,
+                    ];
+                }
+            }
+
+            $result[] = [
+                'id_pesanan' => $p->id,
+                'jumlah_produk' => $p->jumlah_produk,
+                'total_harga' => $p->total_harga,
+                'status_pesanan' => $p->status_pesanan,
+                'tanggal_pesan' => $p->tanggal_pesan,
+                'tanggal_kirim' => $p->tanggal_kirim,
+                'id_customer' => $p->id_customer,
+                'bukti_pembayaran' => $p->bukti_pembayaran,
+                'id_alamat' => $p->id_alamat,
+                'jenis_pengantaran' => $p->jenis_pengantaran,
+                'jarak_pengiriman' => $p->jarak_pengiriman,
+                'ongkos_kirim' => $p->ongkos_kirim,
+                'jumlah_tip' => $p->jumlah_tip,
+                'tanggal_diproses' => $p->tanggal_diproses,
+                'detail_penggunaan_bahan' => $detail_penggunaan_bahan
+            ];
+        }
+
+        return response()->json(['message' => 'Daftar Pesanan dengan Bahan Baku yang Digunakan', 'data' => $result], 200);
     }
 }

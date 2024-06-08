@@ -18,11 +18,25 @@ class Detail_Pesanan extends Model
         'jmlh_produk'
     ];
 
-    public function produk() {
+    public function produk()
+    {
         return $this->belongsTo(Produk::class, 'id_produk');
     }
 
-    public function pesanan() {
+    public function pesanan()
+    {
         return $this->belongsTo(Pesanan::class, 'id_pesanan');
+    }
+
+    // Relationship with Detail_Resep
+    public function detailResep()
+    {
+        return $this->hasMany(Detail_Resep::class, 'id_pesanan');
+    }
+
+    // Relationship with Detail_Pengadaan
+    public function detailPengadaan()
+    {
+        return $this->hasMany(Detail_Pengadaan::class, 'id_bahan_baku');
     }
 }

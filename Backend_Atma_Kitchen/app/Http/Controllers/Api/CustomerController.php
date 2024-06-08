@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Pesanan;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -91,4 +92,5 @@ class CustomerController extends Controller
             'data' => null
         ], 400);
     }
+
 }

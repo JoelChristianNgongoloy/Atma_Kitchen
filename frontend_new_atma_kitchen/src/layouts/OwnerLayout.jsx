@@ -6,6 +6,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   BanknotesIcon,
+  KeyIcon
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
     path: "/owner/gaji",
     name: "Ubah Gaji Pegawai",
     icon: <BanknotesIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/owner/laporanPenjualanBulanan",
+    name: "Laporan Penjualan Bulanan",
+    icon: <KeyIcon className="h-5 w-5" />,
   },
 ];
 

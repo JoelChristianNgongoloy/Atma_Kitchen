@@ -10,6 +10,7 @@ import {
   ShoppingBagIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
+  PlusIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -42,6 +43,16 @@ const routes = [
     path: "/mo/pengeluaran",
     name: "Kelola Pengeluaran",
     icon: <CurrencyDollarIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/laporanPenjualanBulananMo",
+    name: "Laporan Penjualan Bulanan",
+    icon: <PlusIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/laporanPenggunaanBahanBakuMo",
+    name: "Laporan Pengunaan Bahan Baku",
+    icon: <PlusIcon className="h-5 w-5" />,
   },
 ];
 

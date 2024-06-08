@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasFactory;
-    
+
     public $timestamps = false;
     protected $table = "customer";
     protected $primaryKey = "id";
@@ -19,7 +19,13 @@ class Customer extends Model
         'id_user',
     ];
 
-    public function User(){
+    public function User()
+    {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function pesanan()
+    {
+        return $this->hasMany(Pesanan::class, 'id_customer');
     }
 }

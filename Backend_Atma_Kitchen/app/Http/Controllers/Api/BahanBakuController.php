@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\BahanBaku;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Contracts\Service\Attribute\Required;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class BahanBakuController extends Controller
 {
@@ -160,4 +162,5 @@ class BahanBakuController extends Controller
             'data' => null
         ], 400);
     }
+
 }

@@ -21,6 +21,10 @@ const routes = [
     path: "/contact",
     name: "Contact",
   },
+  {
+    path: "/konfirmasiPesananByCustomer",
+    name: "Konfirmasi Pesanan",
+  },
 ];
 const CustomerLayout = ({ children }) => {
   return (
