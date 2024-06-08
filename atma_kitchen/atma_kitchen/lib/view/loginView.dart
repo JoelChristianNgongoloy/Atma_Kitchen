@@ -4,6 +4,7 @@ import 'package:atma_kitchen/view/registerView.dart';
 import 'package:flutter/material.dart';
 import 'package:atma_kitchen/roundBtn.dart';
 import 'package:atma_kitchen/services/auth_service.dart';
+import 'package:atma_kitchen/view/Home/pencatatanbahanbakuview.dart';
 import 'package:atma_kitchen/services/globals.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,7 +32,7 @@ class _loginViewState extends State<LoginView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => MOView(token),
+                builder: (BuildContext context) => PencatatanBahanBakuView(token),
               ),
             );
           } else if (userData['id_role'] == 4) {

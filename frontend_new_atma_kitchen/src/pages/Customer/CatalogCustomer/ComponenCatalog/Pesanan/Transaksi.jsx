@@ -27,7 +27,7 @@ const Transaksi = () => {
       const data = await GetTransaksi(id);
       console.log("Ini Data Transaksi", data);
       const trans = data.filter(
-        (item) => (item.pesanan.status_pesanan === "Konfirmasi")
+        (item) => (item.pesanan.status_pesanan === "DiKonfirmasi")
       );
       setTrans(trans);
       setLoading(false);

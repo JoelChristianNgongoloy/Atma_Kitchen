@@ -122,7 +122,7 @@ class PesananController extends Controller
         $order = Pesanan::find($id);
 
         if ($order !== null) {
-            $order->status_pesanan = 'Diproses';
+            $order->status_pesanan = 'DiKonfirmasi';
             $order->save();
 
             return response()->json([
@@ -160,7 +160,7 @@ class PesananController extends Controller
 
         try {
             $user = Auth::user();
-            $tanggalPesan = now();
+            $tanggalPesan = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
             $statusPesanan = 'Pending';
 
             $produkIds = $request->input('produk_ids');
@@ -260,6 +260,11 @@ class PesananController extends Controller
                     $kuota->save();
                 }
             }
+        }
+
+        if ($produk->status_produk === 'Pre Order') {
+            $tanggalProses = Carbon::now()->addDays(1)->setTimezone('Asia/Jakarta')->toDateString();
+            $pesanan->tanggal_diproses = $tanggalProses;
         }
 
         foreach ($detailPesanan as $details) {
@@ -461,9 +466,6 @@ class PesananController extends Controller
 
         // Update total_bayar pada pesanan
         $pesanan->total_harga = $request->total_bayar;
-
-        // Update status pesanan menjadi 'Dikonfirmasi'
-        $pesanan->status_pesanan = 'Konfirmasi';
 
         // Save pesanan
         $pesanan->save();

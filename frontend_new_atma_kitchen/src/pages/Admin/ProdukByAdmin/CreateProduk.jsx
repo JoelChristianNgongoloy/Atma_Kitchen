@@ -13,6 +13,7 @@ import {
 } from "@material-tailwind/react";
 import { CreateProdukWE } from "../../../api/AdminApi/apiProduk";
 // import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CreateProduk = () => {
   const [dataProduk, setDataProduk] = useState({
@@ -48,13 +49,13 @@ const CreateProduk = () => {
     CreateProdukWE(formData)
       .then((response) => {
         setIsPending(false);
-        console.log(response.message);
+        toast.success(response.message);
         window.location.reload();
       })
       .catch((err) => {
         console.log(err);
         setIsPending(false);
-        console.log(JSON.stringify(err.message));
+        toast.error(JSON.stringify(err.message));
       });
   };
 

@@ -102,13 +102,6 @@ const MinumanIndex = () => {
                 </CardBody>
                 <CardFooter className="flex justify-center pt-2">
                   <div>
-                    <Typography
-                      color="blue-gray"
-                      className="font-medium"
-                      textGradient
-                    >
-                      {item.loyang}
-                    </Typography>
                     <Chip
                       color="green"
                       className="text-center"

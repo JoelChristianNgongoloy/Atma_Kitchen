@@ -18,6 +18,7 @@ class KuotaController extends Controller
      */
     public function index()
     {
+        
     }
 
     /**
@@ -66,10 +67,28 @@ class KuotaController extends Controller
         ], 404);
     }
 
-    public function showKuotaWithDate(string $id)
+    public function showKuotaTanggal(string $id)
+    {
+        $kuota = Kuota::with('produk')->where('id_produk', $id)->get();
+
+        if ($kuota->isNotEmpty()) {
+            return response([
+                'message' => 'Retrieve Kuota Success',
+                'data' => $kuota
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Kuota Not Found',
+            'data' => null
+        ], 404);
+    }
+
+    public function showKuotaWithDate(string $id, string $tanggalKuota)
     {
         $kuota = Kuota::with('produk')
-            ->where('id_produk', $id)->whereDate('tanggal_kuota', '=', now()->setTimezone('Asia/Jakarta')->toDateString())
+            ->where('id_produk', $id)
+            ->whereDate('tanggal_kuota', $tanggalKuota)
             ->get();
 
         if ($kuota->isNotEmpty()) {

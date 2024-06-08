@@ -7,7 +7,7 @@ import {
   Typography,
   Spinner,
   Alert,
-  Chip
+  Chip,
 } from "@material-tailwind/react";
 import { GetProdukKue } from "../../../../api/CustomerApi/CatalogApi/CatalogApi";
 import { getFotoProduk } from "../../../../api";
@@ -17,6 +17,8 @@ const CakeIndex = () => {
   const [kue, setKue] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,16 +43,37 @@ const CakeIndex = () => {
     setSearchKeyword(event.target.value);
   };
 
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
+
   const filteredKueList = kue.filter((item) =>
     item.nama_produk.toLowerCase().includes(searchKeyword.toLowerCase())
   );
 
   const navigationProduk = (item) => {
-    if (item.status_produk === "Pre Order") {
-      navigate(`/informationprodukdate/${item.id}`);
+    if (item.status_produk === "Pre Order" && !selectedDate) {
+      setShowAlert(true);
     } else {
-      navigate(`/informationproduk/${item.id}`);
+      if (item.status_produk === "Pre Order" && selectedDate) {
+        const tanggal = encodeURIComponent(selectedDate);
+        navigate(`/informationprodukdate/${item.id}/${tanggal}`);
+      } else {
+        navigate(`/informationproduk/${item.id}`);
+      }
     }
+  };
+
+  const generateDateOptions = () => {
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      const formattedDate = date.toISOString().slice(0, 10);
+      dates.push(formattedDate);
+    }
+    return dates;
   };
 
   return (
@@ -64,6 +87,37 @@ const CakeIndex = () => {
           momen spesial Anda.
         </h1>
       </div>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchKeyword}
+          onChange={handleSearchChange}
+          placeholder="Cari Kue..."
+          className="p-2 border border-gray-300 rounded"
+        />
+        <select
+          value={selectedDate}
+          onChange={handleDateChange}
+          className="ml-2 p-2 border border-gray-300 rounded"
+        >
+          <option value="">Pilih Tanggal Kuota</option>
+          {generateDateOptions().map((date) => (
+            <option key={date} value={date}>
+              {date}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mt-2">
+        <h1 className="text-xl">
+          Pilihlah tanggal kuota untuk melakukan pre
+        </h1>
+      </div>
+      {showAlert && (
+        <Alert color="red" className="mb-4 text-center">
+          Harap pilih tanggal untuk produk pre-order.
+        </Alert>
+      )}
       <div className="">
         <div className="grid grid-cols-3 gap-3">
           {isLoading ? (
@@ -101,6 +155,10 @@ const CakeIndex = () => {
                       currency: "IDR",
                     })}
                   </Typography>
+                  <div className="flex justify-between">
+                    <div></div>
+                    <Chip color="blue" value={item.status_produk} />
+                  </div>
                 </CardBody>
                 <CardFooter className="flex justify-center pt-2">
                   <Typography

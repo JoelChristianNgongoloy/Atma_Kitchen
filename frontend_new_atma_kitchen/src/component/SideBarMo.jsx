@@ -13,7 +13,12 @@ import {
   Drawer,
   Card,
 } from "@material-tailwind/react";
-import { UserCircleIcon, PowerIcon, HomeIcon } from "@heroicons/react/24/solid";
+import {
+  UserCircleIcon,
+  PowerIcon,
+  HomeIcon,
+  GiftTopIcon,
+} from "@heroicons/react/24/solid";
 
 import { useNavigate, useLocation } from "react-router-dom";
 

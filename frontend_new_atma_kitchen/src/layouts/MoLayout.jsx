@@ -11,6 +11,8 @@ import {
   ShoppingCartIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
+  GiftIcon,
+  BanknotesIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -48,6 +50,16 @@ const routes = [
     path: "/mo/pengeluaran",
     name: "Kelola Pengeluaran",
     icon: <CurrencyDollarIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/daftarPesanan",
+    name: "Daftar Pesanan",
+    icon: <GiftIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/penjualanProduk",
+    name: "Laporan Penjualan Produk",
+    icon: <BanknotesIcon className="h-5 w-5" />,
   },
 ];
 

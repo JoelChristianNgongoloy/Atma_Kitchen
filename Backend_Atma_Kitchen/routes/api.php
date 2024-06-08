@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\ResepController;
 use App\Http\Controllers\Api\ResetPasswordCustomerController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TransaksiController;
+use App\Http\Controllers\PencatatanBahanBakuController;
 use App\Http\Middleware\Customer;
 
 use App\Models\Detail_Pesanan;
@@ -50,8 +51,9 @@ Route::get("/produkCake", [ProdukController::class, 'produkCake']);
 Route::get("/produkindex", [ProdukController::class, 'indexMobile']);
 Route::get("/produkRoti", [ProdukController::class, 'produkRoti']);
 Route::get("/produkMinuman", [ProdukController::class, 'produkMinuman']);
-Route::get('/informationprodukdate/{id}', [KuotaController::class, 'showKuotaWithDate']);
+Route::get('/informationprodukdate/{id}/{tanggalKuota}', [KuotaController::class, 'showKuotaWithDate']);
 Route::get('/informationprodukdatethen/{id}', [KuotaController::class, 'showKuotaWithDateThen']);
+Route::get('/kuotaTanggal/{id}', [KuotaController::class, 'showKuotaTanggal']);
 Route::get('/informationprodukdatebesok/{id}', [KuotaController::class, 'showKuotaWithDatebesok']);
 Route::get('/informationproduk/{id}', [ProdukController::class, 'show']);
 
@@ -61,9 +63,13 @@ Route::group(['middleware' => ['auth:api', 'owner']], function () {
     // Update Gaji dan Bonus
     Route::put('/pegawaiOwner/{id}', [PegawaiController::class, 'updateOwner']);
     Route::get('/pegawaiOwner', [PegawaiController::class, 'indexOwner']);
+    Route::get("/laporanBahanOwner", [PencatatanBahanBakuController::class, 'index']);
+    Route::post('/cetakPesananOwner', [Detail_PesananController::class, 'getDetailPesananByBulanTahun']);
 });
 Route::group(['middleware' => ['auth:api', 'mo']], function () {
     Route::post('/change-password', [ChangePasswordPegawaiController::class, 'changePasswordPegawai']);
+    Route::post('/cetakPesanan', [Detail_PesananController::class, 'getDetailPesananByBulanTahun']);
+    Route::get("/pencatatanBahanBaku", [PencatatanBahanBakuController::class, 'index']);
 
     // Pengeluaran
     Route::get('/pengeluaran', [PengeluaranController::class, 'index']);
@@ -119,6 +125,9 @@ Route::group(['middleware' => ['auth:api', 'mo']], function () {
     // Pesanan
     Route::get('/pesanan/konfirmasi', [PesananController::class, 'indexKonfirm']);
     Route::put('/pesanan/konfirmasi/{id}', [PesananController::class, 'updateStatus']);
+
+    Route::get('/daftarPesanan', [Detail_PesananController::class, 'showDaftarPesanan']);
+    Route::put('/daftarPesanan/{id}', [Detail_PesananController::class, 'update']);
 });
 
 Route::group(['middleware' => ['auth:api', 'admin']], function () {

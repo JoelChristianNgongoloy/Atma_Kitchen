@@ -25,6 +25,7 @@ class Pesanan extends Model
         'jarak_pengiriman',
         'ongkos_kirim',
         'jumlah_tip',
+        'tanggal_diproses'
     ];
 
     public function customer()

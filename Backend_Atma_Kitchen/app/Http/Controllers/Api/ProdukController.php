@@ -134,7 +134,7 @@ class ProdukController extends Controller
             'foto_produk' => 'required|image:jpeg,png,jpg,gif,svg|max:2048',
             'status_produk' => 'required|in:Pre Order,Ready Stock',
             'type' => 'required|in:Cake,Roti,Minuman',
-            'loyang' => "in:1 Loyang,1/2 Loyang"
+            'loyang' => "nullable|in:1 Loyang,1/2 Loyang"
         ]);
 
         if ($validate->fails())
@@ -149,11 +149,17 @@ class ProdukController extends Controller
         $produk = Produk::create($storeData);
 
         if ($storeData["status_produk"] === "Pre Order") {
-            $kuota = Kuota::create([
-                'id_produk' => $produk->id,
-                'tanggal_kuota' => now()->setTimezone('Asia/Jakarta'),
-                'loyang' => 10
-            ]);
+            $currentDate = now()->setTimezone('Asia/Jakarta');
+            $endDate = $currentDate->copy()->addMonth();
+
+            while ($currentDate->lte($endDate)) {
+                Kuota::create([
+                    'id_produk' => $produk->id,
+                    'tanggal_kuota' => $currentDate->copy(),
+                    'loyang' => 10
+                ]);
+                $currentDate->addDay();
+            }
         }
 
         return response([

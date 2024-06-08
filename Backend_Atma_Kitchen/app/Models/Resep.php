@@ -18,8 +18,12 @@ class Resep extends Model
         'id_produk'
     ];
 
-    public function Produk()
+    public function produk()
     {
         return $this->belongsTo(Produk::class, 'id_produk');
+    }
+    public function detailResep()
+    {
+        return $this->hasMany(Detail_Resep::class, 'id_resep');
     }
 }

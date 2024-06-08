@@ -16,7 +16,7 @@ const TampilDiproses = () => {
       .then((data) => {
         console.log("Pesanan Data:", data);
         const pendingPesanan = data.filter(
-          (item) => item.status_pesanan === "Diproses"
+          (item) => item.status_pesanan === "Di Proses"
         );
         setPesanan(pendingPesanan);
         setIsLoading(false);
@@ -43,8 +43,7 @@ const TampilDiproses = () => {
               {pesanan.map((pesananItem, index) => (
                 <div
                   key={index}
-                  className="border border-slate-700 shadow-lg rounded-md px-10 mb-6 cursor-pointer"
-                  onClick={() => navigate(`/detail_pesanAll/${pesananItem.id}`)}
+                  className="border border-slate-700 shadow-lg rounded-md px-10 mb-6  "
                 >
                   <div className="w-full flex justify-between">
                     <div></div>

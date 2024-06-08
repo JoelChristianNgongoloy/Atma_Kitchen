@@ -47,6 +47,10 @@ import KeranjangUser from "../pages/Customer/CatalogCustomer/ComponenCatalog/Ker
 import DetailPesananByKeranjang from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesananByKeranjang";
 import AlamatInput from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/AlamatInput";
 import TampilPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/TampilPesanan";
+import DaftarPesananMo from "../pages/Mo/DaftarPesananByMo/DaftarPesananMo";
+import TampilPesananaByBulanTahun from "../pages/Mo/TampilPesanan/TampilPesananaByBulanTahun";
+import LaporanPesanan from "../pages/Owner/PesananOwner/LaporanPesanan";
+import LaporanBahanBaku from "../pages/Owner/PencatatanBahan/LaporanBahanBaku";
 // import KuotaIndex from "../pages/Admin/HampersByAdmin/KuotaIndex";
 
 const router = createBrowserRouter([
@@ -132,6 +136,14 @@ const router = createBrowserRouter([
         path: "/mo/pesanan",
         element: <PesananMo />,
       },
+      {
+        path: "/mo/daftarPesanan",
+        element: <DaftarPesananMo />,
+      },
+      {
+        path: "/mo/penjualanProduk",
+        element: <TampilPesananaByBulanTahun />,
+      },
     ],
   },
   {
@@ -145,6 +157,18 @@ const router = createBrowserRouter([
       {
         path: "/owner/gaji",
         element: <GajiOwner />,
+      },
+      {
+        path: "/owner/gaji",
+        element: <GajiOwner />,
+      },
+      {
+        path: "/owner/laporanPesanan",
+        element: <LaporanPesanan />,
+      },
+      {
+        path: "/owner/laporanBahanBaku",
+        element: <LaporanBahanBaku />,
       },
     ],
   },
@@ -165,7 +189,7 @@ const router = createBrowserRouter([
         element: <CatalogPage />,
       },
       {
-        path: "/informationprodukdate/:id",
+        path: "/informationprodukdate/:id/:tanggal",
         element: <ProdukInformationDate />,
       },
       {

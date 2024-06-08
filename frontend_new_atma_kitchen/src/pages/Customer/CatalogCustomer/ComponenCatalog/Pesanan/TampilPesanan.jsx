@@ -11,6 +11,7 @@ import TampilPesan from "./TampilPesan/TampilPesan";
 import TampilBelumLunas from "./TampilPesan/TampilBelumLunas";
 import TampilDiproses from "./TampilPesan/TampilDiproses";
 import TampilMenungguKonfirmasi from "./TampilPesan/TampilMenungguKonfirmasi";
+import TampilKonfirmasi from "./TampilPesan/TampilKonfirmasi";
 
 const TampilPesanan = () => {
   const [activeTab, setActiveTab] = React.useState("pesan");
@@ -34,6 +35,11 @@ const TampilPesanan = () => {
       label: "Menunggu Konfirmasi",
       value: "wait",
       element: <TampilMenungguKonfirmasi />,
+    },
+    {
+      label: "Di Konfirmasi",
+      value: "confirm",
+      element: <TampilKonfirmasi />,
     },
     {
       label: "Diproses",
