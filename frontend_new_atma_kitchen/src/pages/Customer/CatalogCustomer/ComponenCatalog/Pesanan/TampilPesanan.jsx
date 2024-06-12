@@ -7,24 +7,44 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 import TampilPending from "./TampilPesan/TampilPending";
+import TampilPesan from "./TampilPesan/TampilPesan";
+import TampilBelumLunas from "./TampilPesan/TampilBelumLunas";
+import TampilDiproses from "./TampilPesan/TampilDiproses";
+import TampilMenungguKonfirmasi from "./TampilPesan/TampilMenungguKonfirmasi";
+import TampilKonfirmasi from "./TampilPesan/TampilKonfirmasi";
 
 const TampilPesanan = () => {
-  const [activeTab, setActiveTab] = React.useState("pending");
+  const [activeTab, setActiveTab] = React.useState("pesan");
   const data = [
+    {
+      label: "Pesanan",
+      value: "pesan",
+      element: <TampilPesan />,
+    },
     {
       label: "Pending",
       value: "pending",
       element: <TampilPending />,
     },
     {
-      label: "Lunas",
-      value: "lunas",
-      element: <div></div>,
+      label: "Belum Lunas",
+      value: "belum lunas",
+      element: <TampilBelumLunas />,
     },
     {
-      label: "Vue",
-      value: "vue",
-      element: <div></div>,
+      label: "Menunggu Konfirmasi",
+      value: "wait",
+      element: <TampilMenungguKonfirmasi />,
+    },
+    {
+      label: "Di Konfirmasi",
+      value: "confirm",
+      element: <TampilKonfirmasi />,
+    },
+    {
+      label: "Diproses",
+      value: "diproses",
+      element: <TampilDiproses />,
     },
     {
       label: "Angular",

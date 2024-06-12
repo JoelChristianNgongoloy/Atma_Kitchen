@@ -100,13 +100,13 @@ const RotiIndex = () => {
                 </CardBody>
                 <CardFooter className="flex justify-center pt-2">
                   <div>
-                    <Typography
+                    {/* <Typography
                       color="blue-gray"
                       className="font-medium"
                       textGradient
                     >
                       {item.loyang}
-                    </Typography>
+                    </Typography> */}
 
                     <Chip
                       color="green"

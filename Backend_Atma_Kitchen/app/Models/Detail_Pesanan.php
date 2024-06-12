@@ -25,4 +25,10 @@ class Detail_Pesanan extends Model
     public function pesanan() {
         return $this->belongsTo(Pesanan::class, 'id_pesanan');
     }
+
+    public function resep()
+    {
+        return $this->hasManyThrough(Detail_Resep::class, Resep::class, 'id_produk', 'id_resep', 'id_produk', 'id');
+    }
+
 }

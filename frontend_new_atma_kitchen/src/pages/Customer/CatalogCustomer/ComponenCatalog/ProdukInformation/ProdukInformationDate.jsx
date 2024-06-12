@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
-  GetProdukWithKuota,
-  GetProdukWithKuotathen,
-  GetProdukWithKuotabesok,
   CreatePesananWE,
+  GetProdukWithKuota,
+  GetTanggalKuota,
 } from "../../../../../api/CustomerApi/CatalogApi/informationApi";
 import { Button, Spinner } from "@material-tailwind/react";
 import { useParams } from "react-router-dom";
@@ -15,15 +14,24 @@ import { useNavigate } from "react-router-dom";
 import { createKeranjangWE } from "../../../../../api/CustomerApi/KeranjangApi";
 
 const ProdukInformationDate = () => {
-  const { id } = useParams();
-  const [kuota, setKuota] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedDate, setSelectedDate] = useState("today");
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
-
-  const navigate = useNavigate();
+  // const { id, tanggal } = useParams();
+  // const [kuota, setKuota] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(tanggal);
+  // const [selectedQuantity, setSelectedQuantity] = useState(1);
+  // const [availableDates, setAvailableDates] = useState([]);
+  // const navigate = useNavigate();
   const [token, setToken] = useState("");
+
+  const { id, tanggal } = useParams();
+  const [kuota, setKuota] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("tanggal");
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [availableDates, setAvailableDates] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const tokenDariSS = sessionStorage.getItem("token");
@@ -31,66 +39,51 @@ const ProdukInformationDate = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedDate === "today") {
-      fetchData();
-    } else if (selectedDate === "besok") {
-      fetchDataBesok();
-    } else {
-      fetchDatathen();
-    }
-  }, [id, selectedDate]);
-
-  const fetchDataBesok = async () => {
-    setIsLoading(true);
-    try {
-      const dataBesok = await GetProdukWithKuotabesok(id);
-      console.log("Data fetched:", dataBesok);
-      if (Array.isArray(dataBesok) && dataBesok.length > 0) {
-        setKuota(dataBesok[0]);
-      } else {
-        setKuota(null);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Jika tanggal sudah ditentukan dari params, maka gunakan tanggal tersebut
+        if (tanggal) {
+          const data = await GetProdukWithKuota(id, tanggal);
+          console.log("Data fetched:", data);
+          setKuota(data[0]); // Mengambil objek pertama dari array
+          const dates = data.map((item) => item.tanggal_kuota);
+          setAvailableDates(dates);
+        } else {
+          // Jika tidak ada tanggal yang ditentukan dari params, ambil tanggal pertama dari daftar kuota dengan menggunakan tanggal yang dipilih
+          const data = await GetProdukWithKuota(id, selectedDate);
+          console.log("Data fetched:", data);
+          setKuota(data[0]); // Mengambil objek pertama dari array
+          const dates = data.map((item) => item.tanggal_kuota);
+          setAvailableDates(dates);
+          setSelectedDate(dates[0]); // Set tanggal yang pertama kali tersedia
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
+    };
+    fetchData();
+  }, [id, tanggal, selectedDate]);
+
+  const handleSelectChange = async (e) => {
+    console.log("handleSelectChange called"); // Tambahkan ini untuk memeriksa pemanggilan fungsi
+    const selectedDate = e.target.value;
+    setSelectedDate(selectedDate);
+
+    // Perbarui kuota berdasarkan tanggal yang dipilih
+    try {
+      const data = await GetProdukWithKuota(id, selectedDate); // Panggil GetProdukWithKuota dengan id dan tanggal yang dipilih
+      console.log("Data fetched Tanggal:", data);
+      setKuota(data[0]); // Mengambil objek pertama dari array
+      // Perbarui daftar tanggal yang tersedia
+      const allDates = await GetTanggalKuota(id); // Panggil GetTanggalKuota dengan id untuk mendapatkan semua tanggal
+      setAvailableDates(allDates.map((item) => item.tanggal_kuota)); // Set semua tanggal yang tersedia
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error.message);
-      setIsLoading(false);
-    }
-  };
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const data = await GetProdukWithKuota(id);
-      console.log("Data fetched:", data);
-      if (Array.isArray(data) && data.length > 0) {
-        setKuota(data[0]);
-      } else {
-        setKuota(null);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error.message);
-      setIsLoading(false);
-    }
-  };
-
-  const fetchDatathen = async () => {
-    setIsLoading(true);
-    try {
-      const thenData = await GetProdukWithKuotathen(id);
-      console.log("Data fetched:", thenData);
-      if (Array.isArray(thenData) && thenData.length > 0) {
-        setKuota(thenData[0]);
-      } else {
-        setKuota(null);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error.message);
-      setIsLoading(false);
     }
   };
 
@@ -104,7 +97,7 @@ const ProdukInformationDate = () => {
     );
   };
 
-  const handleKeranjang = (produk) => {
+  const handleKeranjang = async () => {
     if (!kuota || !kuota.produk) {
       console.log("Data produk tidak tersedia.");
       return;
@@ -115,15 +108,14 @@ const ProdukInformationDate = () => {
       id_produk: kuota.produk.id,
       jumlah_produks: selectedQuantity,
     };
-    createKeranjangWE(masuk)
-      .then((response) => {
-        console.log(response);
-        alert(response.message);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err);
-      });
+    try {
+      const response = await createKeranjangWE(masuk);
+      console.log(response);
+      alert(response.message);
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
   };
 
   const handleToAddPesanan = async () => {
@@ -142,31 +134,18 @@ const ProdukInformationDate = () => {
 
       navigate(`/showInputAlamat/${detail_pesanId}`);
       console.log(data);
-      console.log(data);
     } catch (error) {
       console.error("Error:", error);
       alert(error.message || "Gagal menambahkan pesanan");
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="text-center mt-96">
-        <div className="flex justify-center">
-          <Spinner />
-        </div>
-        <h6 className="mt-2 mb-0">Loading...</h6>
-      </div>
-    );
-  }
-
+  if (isLoading) return <div>Loading...</div>;
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
-
   if (!kuota || !kuota.produk) {
-    console.log("Kuota or kuota.produk is null:", kuota);
-    return <div className="text-center">Data produk tidak tersedia.</div>;
+    return <div>Data produk tidak tersedia.</div>;
   }
 
   return (
@@ -174,17 +153,20 @@ const ProdukInformationDate = () => {
       <div className="text-center mb-10">
         <h1 className="font-bold text-3xl mb-4">Informasi Produk</h1>
         <select
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          value={kuota.tanggal}
+          onChange={handleSelectChange}
           className="mb-4 w-full text-center p-2 border border-gray-300 rounded"
         >
-          <option value="today">Hari Ini</option>
-          <option value="besok">Besok</option>
-          <option value="then">Lusa</option>
+          {availableDates.map((date) => (
+            <option key={date} value={date}>
+              {date}
+            </option>
+          ))}
         </select>
       </div>
       <div className="flex flex-col lg:flex-row items-center lg:items-start lg:max-w-4xl w-full">
         <div className="lg:w-1/3 w-full max-w-xs mb-6 lg:mb-0">
+          {/* {console.log(handleSelectChange)} */}
           <img
             className="w-full rounded-lg object-cover object-center shadow-xl shadow-blue-gray-900/50"
             src={getFotoProduk(kuota.produk.foto_produk)}
@@ -202,9 +184,6 @@ const ProdukInformationDate = () => {
             Tanggal Kuota: {kuota.tanggal_kuota}
           </h2>
           <p className="text-black mb-4">Jumlah Kuota: {kuota.loyang}</p>
-          <p className="text-black mb-4">
-            Stok Produk: {kuota.produk.stok_produk}
-          </p>
           <p className="text-black mb-4">
             Harga :{" "}
             {kuota.produk.harga_produk.toLocaleString("id-ID", {

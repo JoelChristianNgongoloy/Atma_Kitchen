@@ -8,8 +8,12 @@ import {
   IdentificationIcon,
   UsersIcon,
   ShoppingBagIcon,
+  ShoppingCartIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
+  GiftIcon,
+  BanknotesIcon,
+  PlusIcon,
 } from "@heroicons/react/24/solid";
 
 const routes = [
@@ -34,6 +38,11 @@ const routes = [
     icon: <UsersIcon className="h-5 w-5" />,
   },
   {
+    path: "/mo/pesanan",
+    name: "Kelola Pesanan",
+    icon: <ShoppingCartIcon className="h-5 w-5" />,
+  },
+  {
     path: "/mo/pembelian",
     name: "Kelola Pembelian",
     icon: <ShoppingBagIcon className="h-5 w-5" />,
@@ -42,6 +51,41 @@ const routes = [
     path: "/mo/pengeluaran",
     name: "Kelola Pengeluaran",
     icon: <CurrencyDollarIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/daftarPesanan",
+    name: "Daftar Pesanan",
+    icon: <GiftIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/penjualanProduk",
+    name: "Laporan Penjualan Produk",
+    icon: <BanknotesIcon className="h-5 w-5" />,
+  },
+  {
+    path:"/mo/laporan/presensi-gaji",
+    name:"Laporan Presensi & Gaji",
+    icon:<UserGroupIcon className="h-5 w-5" />
+  },
+  {
+    path:"/mo/laporan/pengeluaran-pemasukkan",
+    name:"Laporan Pemasukkan & Pengeluaran",
+    icon:<CurrencyDollarIcon className="h-5 w-5" />
+  },
+  {
+    path:"/mo/laporan/transaksi-penitip",
+    name:"Laporan Transaksi Penitip",
+    icon:<UsersIcon className="h-5 w-5" />
+  },
+  {
+    path: "/mo/laporanPenjualanBulananMo",
+    name: "Laporan Penjualan Bulanan",
+    icon: <PlusIcon className="h-5 w-5" />,
+  },
+  {
+    path: "/mo/laporanPenggunaanBahanBakuMo",
+    name: "Laporan Pengunaan Bahan Baku",
+    icon: <PlusIcon className="h-5 w-5" />,
   },
 ];
 

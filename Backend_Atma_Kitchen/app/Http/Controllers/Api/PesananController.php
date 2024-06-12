@@ -119,11 +119,10 @@ class PesananController extends Controller
 
     public function updateStatus(string $id)
     {
-
         $order = Pesanan::find($id);
 
-        if ($order) {
-            $order->status_pesanan = 'Diproses';
+        if ($order !== null) {
+            $order->status_pesanan = 'DiKonfirmasi';
             $order->save();
 
             return response()->json([
@@ -140,7 +139,7 @@ class PesananController extends Controller
 
     public function indexKonfirm()
     {
-        $orders = Pesanan::where('status_pesanan', 'Lunas')
+        $orders = Pesanan::where('status_pesanan', 'Menunggu Konfirmasi Pembayaran')
             ->whereNotNull('bukti_pembayaran')
             ->get();
 
@@ -161,7 +160,7 @@ class PesananController extends Controller
 
         try {
             $user = Auth::user();
-            $tanggalPesan = now();
+            $tanggalPesan = now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
             $statusPesanan = 'Pending';
 
             $produkIds = $request->input('produk_ids');
@@ -261,6 +260,11 @@ class PesananController extends Controller
                     $kuota->save();
                 }
             }
+        }
+
+        if ($produk->status_produk === 'Pre Order') {
+            $tanggalProses = Carbon::now()->addDays(1)->setTimezone('Asia/Jakarta')->toDateString();
+            $pesanan->tanggal_diproses = $tanggalProses;
         }
 
         foreach ($detailPesanan as $details) {
@@ -420,7 +424,7 @@ class PesananController extends Controller
     {
         // Mendapatkan semua pesanan yang jarak_pengiriman bukan null, status_pesanan 'Lunas'
         $pesananMenungguKonfirmasi = Pesanan::with('alamat', 'customer')->whereNot('jarak_pengiriman', -1)
-            ->where('status_pesanan', 'Menunggu Konfirmasi')
+            ->where('status_pesanan', 'Menunggu Konfirmasi Pembayaran')
             ->get();
 
         if ($pesananMenungguKonfirmasi->isEmpty()) {
@@ -448,7 +452,7 @@ class PesananController extends Controller
         }
 
         // Check if the pesanan status is 'Menunggu Konfirmasi'
-        if ($pesanan->status_pesanan != 'Menunggu Konfirmasi') {
+        if ($pesanan->status_pesanan != 'Menunggu Konfirmasi Pembayaran') {
             return response()->json(['message' => 'Pesanan belum Lunas, tidak dapat diubah'], 400);
         }
 
@@ -461,14 +465,266 @@ class PesananController extends Controller
         $pesanan->jumlah_tip = $request->total_bayar - $pesanan->total_harga;
 
         // Update total_bayar pada pesanan
-        $pesanan->total_bayar = $request->total_bayar;
-
-        // Update status pesanan menjadi 'Dikonfirmasi'
-        $pesanan->status_pesanan = 'Dikonfirmasi';
+        $pesanan->total_harga = $request->total_bayar;
 
         // Save pesanan
         $pesanan->save();
 
         return response()->json(['message' => 'Pembayaran dikonfirmasi', 'pesanan' => $pesanan]);
+    }
+    
+    public function tampilDaftarPesanan()
+    {
+        $tampilDaftarPesanan = Pesanan::with('customer', 'alamat')
+            ->where('status_pesanan', 'Diproses')
+            ->get();
+
+        if ($tampilDaftarPesanan->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan yang sedang diproses'], 404);
+        }
+
+        return response()->json(['data' => $tampilDaftarPesanan], 200);
+    }
+
+    public function tampilSelesaikanPesanan()
+    {
+        $tampilDaftarPesanan = Pesanan::with('customer', 'alamat')
+            ->where('status_pesanan', 'Siap di pick up')
+            ->get();
+
+        if ($tampilDaftarPesanan->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan yang sedang diproses'], 404);
+        }
+
+        return response()->json(['data' => $tampilDaftarPesanan], 200);
+    }
+
+    public function updateDaftarPesanan(Request $request, $id_pesanan)
+    {
+        $pesanan = Pesanan::find($id_pesanan);
+
+        if (!$pesanan) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+
+        if ($pesanan->jenis_pengantaran === 'Ambil Sendiri') {
+            $pesanan->status_pesanan = 'Siap di pick up';
+        } else {
+            $pesanan->status_pesanan = 'Sedang dikirim';
+        }
+
+        $pesanan->save();
+
+        return response()->json(['message' => 'Status pesanan berhasil diperbarui', 'pesanan' => $pesanan], 200);
+    }
+
+    public function tampilNotifHp(Request $request)
+    {
+        try {
+            // Validasi input id_customer
+            $validate = Validator::make($request->all(), [
+                'id_customer' => 'required|integer|exists:users,id',
+            ]);
+
+            if ($validate->fails()) {
+                return response(['message' => $validate->errors()->first()], 400);
+            }
+
+            // Ambil ID customer dari request
+            $customerId = $request->input('id_customer');
+
+            // Ambil pesanan dengan status 100 (Sedang dikirim) dan 102 (Siap di pick up)
+            $pesanan = Pesanan::where('id_customer', $customerId)
+                ->whereIn('status_pesanan', ['Sedang dikirim', 'Siap di pick up'])
+                ->get();
+
+            if ($pesanan->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada pesanan yang memerlukan notifikasi'], 404);
+            }
+
+            // pesan notifikasi
+            $notifications = [];
+            foreach ($pesanan as $item) {
+                $message = '';
+                if ($item->status_pesanan === 100) {
+                    $message = 'Pesanan anda sedang dikirim';
+                } elseif ($item->status_pesanan === 102) {
+                    $message = 'Pesanan anda siap di pick up';
+                }
+
+                $notifications[] = [
+                    'id_pesanan' => $item->id,
+                    'message' => $message,
+                    'status_pesanan' => $item->status_pesanan,
+                ];
+            }
+
+            return response()->json(['notifications' => $notifications], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "Error",
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function ubahStatusPesanan(Request $request, $id_pesanan)
+    {
+        try {
+            // Temukan pesanan berdasarkan id_pesanan
+            $pesanan = Pesanan::find($id_pesanan);
+
+            // Pastikan pesanan ditemukan
+            if (!$pesanan) {
+                return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+            }
+
+            // Periksa jenis pengantaran dan ubah status pesanan sesuai
+            if ($pesanan->status_pesanan === 'Siap di pick up') {
+                $pesanan->status_pesanan = 'Sudah di pick up';
+            }
+
+            // Simpan perubahan
+            $pesanan->save();
+
+            return response()->json(['message' => 'Status pesanan berhasil diperbarui', 'pesanan' => $pesanan], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "Error",
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function tampilKonfirmasiPenerimaan()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User belum login'], 400);
+        }
+
+        // Ambil customer yang terkait dengan user
+        $customer = $user->customer;
+
+        if (!$customer) {
+            return response()->json(['message' => 'User tidak memiliki data customer terkait'], 400);
+        }
+
+        // Ambil pesanan dengan status "Sedang dikirim" atau "Siap di pick up" untuk customer tersebut
+        $pesanan = Pesanan::with('customer', 'alamat')
+            ->where('id_customer', $customer->id_user)
+            ->whereIn('status_pesanan', ['Sedang dikirim', 'Sudah di pick up'])
+            ->get();
+
+        if ($pesanan->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan yang sesuai'], 404);
+        }
+
+        return response()->json(['data' => $pesanan], 200);
+    }
+
+    public function customerUpdateStatus(Request $request, $id_pesanan)
+    {
+        // Temukan pesanan berdasarkan id_pesanan
+        $pesanan = Pesanan::find($id_pesanan);
+
+        // Pastikan pesanan ditemukan
+        if (!$pesanan) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+
+        try {
+            // Ubah status pesanan menjadi 'Selesai' jika status sebelumnya adalah 'Siap di pick up' atau 'Sedang diantar'
+            if ($pesanan->status_pesanan === 'Sudah di pick up' || $pesanan->status_pesanan === 'Sedang dikirim') {
+                $pesanan->status_pesanan = 'Selesai';
+                // Simpan perubahan
+                $pesanan->save();
+                return response()->json(['message' => 'Status pesanan berhasil diperbarui', 'pesanan' => $pesanan], 200);
+            } else {
+                return response()->json(['error' => 'Status pesanan tidak dapat diubah'], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "Error",
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function tampilPesananTelatBayar()
+    {
+        try {
+            // Ambil tanggal besok
+            $besok = Carbon::now()->addDay()->toDateString();
+
+            // Ambil pesanan dengan status "Belum Lunas" dan tanggal kirim besok
+            $pesanan = Pesanan::with('customer', 'alamat')
+                ->where('status_pesanan', 'Belum Lunas')
+                ->whereDate('tanggal_kirim', $besok)
+                ->get();
+
+            if ($pesanan->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada pesanan yang telat bayar'], 404);
+            }
+
+            return response()->json(['data' => $pesanan], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "Error",
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function pembatalanTransaksiTelatBayar(Request $request, $id_pesanan)
+    {
+        try {
+            // Temukan pesanan berdasarkan id_pesanan
+            $pesanan = Pesanan::find($id_pesanan);
+
+            // Pastikan pesanan ditemukan
+            if (!$pesanan) {
+                return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+            }
+
+            // Ubah status pesanan menjadi "Dibatalkan"
+            $pesanan->status_pesanan = 'Dibatalkan';
+            $pesanan->save();
+
+            return response()->json(['message' => 'Pesanan berhasil dibatalkan', 'pesanan' => $pesanan], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => "Error",
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function pengembalianStokTelatBayar()
+    {
+    }
+
+    public function laporanPenjualanBulanan(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+
+            'tahun' => 'required|integer|min:2000|max:'.date('Y')
+        ]);
+    
+        $tahun = $validated['tahun'];
+    
+        // Ambil pesanan yang sudah selesai atau sudah di pick up pada bulan dan tahun yang diinputkan
+        $pesanan = Pesanan::with('customer', 'alamat')
+            ->whereIn('status_pesanan', ['Selesai', 'Sudah di pick up'])
+            ->whereYear('tanggal_kirim', $tahun)
+            ->get();
+    
+        if ($pesanan->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada pesanan pada bulan dan tahun yang dipilih'], 404);
+        }
+    
+        return response()->json(['data' => $pesanan], 200);
     }
 }

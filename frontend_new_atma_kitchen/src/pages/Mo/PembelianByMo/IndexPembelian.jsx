@@ -19,8 +19,10 @@ const TABLE_HEAD = [
   "Total Harga",
   "Tanggal Pengadaan",
   "Delete",
+  "Edit",
 ];
 import { GetAllPengadaan } from "../../../api/MoApi/apiPengadaan";
+import EditPengadaan from "./EditPengadaan";
 const IndexPembelian = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
@@ -179,7 +181,10 @@ const IndexPembelian = () => {
                         </Button>
                       </td>
                       <td className={`${classes} bg-blue-gray-50/50`}>
-                        {/* <EditPenitip penitip={item} onClose={fetchPenitip} /> */}
+                        <EditPengadaan
+                          dataPengadaans={item}
+                          onClose={fetchBeli}
+                        />
                       </td>
                     </tr>
                   );

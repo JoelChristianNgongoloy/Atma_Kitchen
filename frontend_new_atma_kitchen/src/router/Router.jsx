@@ -18,6 +18,9 @@ import BahanBakuAdmin from "../pages/Admin/BahanBakuByAdmin/BahanBakuAdmin";
 import ListCustomer from "../pages/Admin/ListCustomerByAdmin/ListCustomer";
 import InputJarak from "../pages/Admin/InputJarakByAdmin/InputJarak";
 import KonfirmasiPesanan from "../pages/Admin/KonfirmasiPesananByAdmin/KonfirmasiPesanan";
+import KonfirmasiPenarikan from "../pages/Admin/SaldobyAdmin/KonfirmasiPenarikan";
+import LaporanPenjualanBulanan from "../pages/Owner/LaporanPenjualanBulanan";
+import LaporanPenjualanBulananMo from "../pages/Mo/LaporanPenjualanBulananMo";
 
 import Register from "../pages/Register";
 import Login from "../pages/Login";
@@ -28,6 +31,10 @@ import PegawaiMo from "../pages/Mo/PegawaiByMo/PegawaiMo";
 import PenitipMo from "../pages/Mo/PenitipByMo/PenitipMo";
 import PengeluaranMo from "../pages/Mo/PengeluaranByMo/PengeluaranMo";
 import PembelianMo from "../pages/Mo/PembelianByMo/PembelianMo";
+import PesananMo from "../pages/Mo/PesananByMo/PesananMo";
+import LaporanPresensiGaji from "../pages/Mo/Laporan/LaporanPresensiGaji";
+import LaporanPengeluaranPemasukkan from "../pages/Mo/Laporan/LaporanPengeluaranPemasukkan";
+import LaporanTransaksiPenitip from "../pages/Mo/Laporan/LaporanTransaksiPenitip";
 
 import OwnerLayout from "../layouts/OwnerLayout";
 import WelcomeOwner from "../pages/Owner/WelcomeOwner";
@@ -46,7 +53,16 @@ import KeranjangUser from "../pages/Customer/CatalogCustomer/ComponenCatalog/Ker
 import DetailPesananByKeranjang from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/DetailPesananByKeranjang";
 import AlamatInput from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/AlamatInput";
 import TampilPesanan from "../pages/Customer/CatalogCustomer/ComponenCatalog/Pesanan/TampilPesanan";
+import DaftarPesananMo from "../pages/Mo/DaftarPesananByMo/DaftarPesananMo";
+import TampilPesananaByBulanTahun from "../pages/Mo/TampilPesanan/TampilPesananaByBulanTahun";
+import LaporanPesanan from "../pages/Owner/PesananOwner/LaporanPesanan";
+import LaporanBahanBaku from "../pages/Owner/PencatatanBahan/LaporanBahanBaku";
 // import KuotaIndex from "../pages/Admin/HampersByAdmin/KuotaIndex";
+import UpdateStatus from "../pages/Admin/UpdateStatusByAdmin/UpdateStatus";
+import UpdateSelesaikanPesanan from "../pages/Admin/UpdateStatusByAdmin/UpdateSelesaikanPesanan";
+import PembatalanPesanan from "../pages/Admin/PembatalanByAdmin/PembatalanPesanan";
+import KonfirmasiPesananByCustomer from "../pages/Customer/KonfirmasiPesanan/KonfirmasiPesananByCustomer";
+import LaporanPenggunaanBahanBakuMo from "../pages/Mo/LaporanPenggunaanBahanBakuMo";
 
 const router = createBrowserRouter([
   {
@@ -101,6 +117,22 @@ const router = createBrowserRouter([
         path: "/admin/konfirmasiPesanan",
         element: <KonfirmasiPesanan />,
       },
+      {
+        path: "/admin/konfirmasiPenarikan",
+        element: <KonfirmasiPenarikan />,
+      },
+      {
+        path: "/admin/updateStatus",
+        element: <UpdateStatus />,
+      },
+      {
+        path: "/admin/updateSelesaikanPesanan",
+        element: <UpdateSelesaikanPesanan />,
+      },
+      {
+        path: "/admin/pembatalanPesanan",
+        element: <PembatalanPesanan />,
+      },
     ],
   },
   {
@@ -127,6 +159,38 @@ const router = createBrowserRouter([
         path: "/mo/pengeluaran",
         element: <PengeluaranMo />,
       },
+      {
+        path: "/mo/pesanan",
+        element: <PesananMo />,
+      },
+      {
+        path: "/mo/daftarPesanan",
+        element: <DaftarPesananMo />,
+      },
+      {
+        path: "/mo/penjualanProduk",
+        element: <TampilPesananaByBulanTahun />,
+      },
+      {
+        path: "/mo/laporan/presensi-gaji",
+        element: <LaporanPresensiGaji />,
+      },
+      {
+        path: "/mo/laporan/pengeluaran-pemasukkan",
+        element: <LaporanPengeluaranPemasukkan />,
+      },
+      {
+        path: "/mo/laporan/transaksi-penitip",
+        element: <LaporanTransaksiPenitip />,
+      },
+      {
+        path: "/mo/laporanPenjualanBulananMo",
+        element: <LaporanPenjualanBulananMo />,
+      },
+      {
+        path: "/mo/laporanPenggunaanBahanBakuMo",
+        element: <LaporanPenggunaanBahanBakuMo />,
+      }
     ],
   },
   {
@@ -141,6 +205,22 @@ const router = createBrowserRouter([
         path: "/owner/gaji",
         element: <GajiOwner />,
       },
+      {
+        path: "/owner/gaji",
+        element: <GajiOwner />,
+      },
+      {
+        path: "/owner/laporanPesanan",
+        element: <LaporanPesanan />,
+      },
+      {
+        path: "/owner/laporanBahanBaku",
+        element: <LaporanBahanBaku />,
+      },
+      {
+        path: "/owner/laporanPenjualanBulanan",
+        element: <LaporanPenjualanBulanan />,
+      }
     ],
   },
   {
@@ -160,7 +240,7 @@ const router = createBrowserRouter([
         element: <CatalogPage />,
       },
       {
-        path: "/informationprodukdate/:id",
+        path: "/informationprodukdate/:id/:tanggal",
         element: <ProdukInformationDate />,
       },
       {
@@ -194,6 +274,10 @@ const router = createBrowserRouter([
       {
         path: "/order",
         element: <TampilPesanan />,
+      },
+      {
+        path: "/konfirmasiPesananByCustomer",
+        element: <KonfirmasiPesananByCustomer />,
       },
     ],
   },

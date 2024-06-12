@@ -1,13 +1,16 @@
 import useAxios from "../..";
 
-export const GetProdukWithKuota = async (idProduk) => {
+export const GetProdukWithKuota = async (idProduk, tanggalKuota) => {
   try {
-    const response = await useAxios.get(`/informationprodukdate/${idProduk}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      },
-    });
+    const response = await useAxios.get(
+      `/informationprodukdate/${idProduk}/${tanggalKuota}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      }
+    );
     return response.data.data;
   } catch (error) {
     throw error.response.data;
@@ -18,6 +21,23 @@ export const GetProdukWithKuotathen = async (idProduk) => {
   try {
     const response = await useAxios.get(
       `/informationprodukdatethen/${idProduk}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const GetTanggalKuota = async (idProduk) => {
+  try {
+    const response = await useAxios.get(
+      `/kuotaTanggal/${idProduk}`,
       {
         headers: {
           "Content-Type": "application/json",

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Detail_Resep;
 use Illuminate\Http\Request;
 use App\Models\Resep;
 use App\Models\Produk;
@@ -15,7 +16,7 @@ class ResepController extends Controller
      */
     public function index()
     {
-        $resep = Resep::with(['Produk'])->get();
+        $resep = Resep::with(['produk'])->get();
         if (count($resep) > 0) {
             return response([
                 'message' => "Retrieved All Success",
@@ -50,6 +51,8 @@ class ResepController extends Controller
         }
 
         $resep = Resep::create($storeData);
+
+
 
         return response([
             'message' => 'Created Resep Success',

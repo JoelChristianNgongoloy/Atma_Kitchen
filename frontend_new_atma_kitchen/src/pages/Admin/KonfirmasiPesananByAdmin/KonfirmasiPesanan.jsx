@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Typography, Alert, Spinner, Input, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
+import {
+  Button,
+  Card,
+  Typography,
+  Alert,
+  Spinner,
+  Input,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
-import { GetAllPesananSudahLunas, UpdateStatusPesanan } from "../../../api/AdminApi/apiKonfirmasiPesanan";
+import {
+  GetAllPesananSudahLunas,
+  UpdateStatusPesanan,
+} from "../../../api/AdminApi/apiKonfirmasiPesanan";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const KonfirmasiPesanan = () => {
   const [pesananSudahLunas, setPesananSudahLunas] = useState([]);
@@ -26,7 +40,9 @@ const KonfirmasiPesanan = () => {
         setIsPending(false);
       })
       .catch((err) => {
-        setError(err.message || "Terjadi kesalahan saat mengambil data pesanan.");
+        setError(
+          err.message || "Terjadi kesalahan saat mengambil data pesanan."
+        );
         setIsPending(false);
       });
   };
@@ -47,7 +63,9 @@ const KonfirmasiPesanan = () => {
       setShowModal(false);
       window.location.reload();
     } catch (error) {
-      setError(error.message || "Terjadi kesalahan saat mengkonfirmasi pesanan.");
+      setError(
+        error.message || "Terjadi kesalahan saat mengkonfirmasi pesanan."
+      );
       console.error(error);
     } finally {
       setIsPending(false);
@@ -90,25 +108,34 @@ const KonfirmasiPesanan = () => {
                   Jumlah Produk: {pesanan.jumlah_produk}
                 </Typography>
                 <Typography variant="paragraph" color="black">
-                  Total Harga: {pesanan.total_harga}
+                  Total Harga:{" "}
+                  {pesanan.total_harga.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  })}
                 </Typography>
                 <Typography variant="paragraph" color="black">
                   Tanggal Pesan: {pesanan.tanggal_pesan}
                 </Typography>
                 <Typography variant="paragraph" color="black">
-                    Nama Customer: {pesanan.customer.nama}
-                  </Typography>
-                  <Typography variant="paragraph" color="black">
-                    Alamat: {pesanan.alamat.alamat_customer}
-                  </Typography>
+                  Nama Customer: {pesanan.customer.nama}
+                </Typography>
+                <Typography variant="paragraph" color="black">
+                  Alamat: Alamat
+                </Typography>
                 <Input
                   type="number"
                   placeholder="Masukkan Jumlah Transaksi"
                   value={jumlahTransaksi[pesanan.id] || ""}
-                  onChange={(e) => handleInputChange(pesanan.id, e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(pesanan.id, e.target.value)
+                  }
                   className="mt-2"
                 />
-                <Button onClick={() => handleConfirm(pesanan.id)} className="mt-2">
+                <Button
+                  onClick={() => handleConfirm(pesanan.id)}
+                  className="mt-2"
+                >
                   Konfirmasi
                 </Button>
               </Card>
@@ -133,7 +160,9 @@ const KonfirmasiPesanan = () => {
       <Dialog open={showModal} handler={() => setShowModal(false)}>
         <DialogHeader>Konfirmasi Jumlah Transaksi</DialogHeader>
         <DialogBody>
-          <Typography>Apakah anda yakin ingin menginput jumlah transaksi?</Typography>
+          <Typography>
+            Apakah anda yakin ingin menginput jumlah transaksi?
+          </Typography>
         </DialogBody>
         <DialogFooter>
           <Button color="red" onClick={() => setShowModal(false)} ripple={true}>

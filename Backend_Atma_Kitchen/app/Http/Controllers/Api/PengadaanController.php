@@ -94,31 +94,56 @@ class PengadaanController extends Controller
     public function update(Request $request, string $id)
     {
         $updateData = $request->all();
-        $pengadaan = Pengadaan::find($id);
 
-        if (is_null($pengadaan)) {
-            return response([
-                'message' => 'Pengadaan Not Found',
-                'data' => null
-            ], 400);
-        }
-
+        // Validasi data
         $validate = Validator::make($updateData, [
-            'harga_pengadaan' => 'numeric',
-            'tanggal_pengadaan' => 'date',
+            'harga_pengadaan' => 'required|numeric',
+            'id_bahan_baku' => 'required',
+            'jumlah_bahan_baku' => 'required|numeric'
         ]);
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400);
         }
 
-        $pengadaan->update($updateData);
+        // Temukan detail pengadaan berdasarkan ID
+        $detailPengadaan = Detail_Pengadaan::find($id);
+
+        if (!$detailPengadaan) {
+            return response(['message' => 'Detail Pengadaan not found'], 404);
+        }
+
+        // Temukan pengadaan berdasarkan id_pengadaan dari detail pengadaan
+        $pengadaan = Pengadaan::find($detailPengadaan->id_pengadaan);
+
+        if (!$pengadaan) {
+            return response(['message' => 'Pengadaan not found'], 404);
+        }
+
+        // Hitung total harga baru
+        $totalHargaBaru = $updateData['harga_pengadaan'] * $updateData['jumlah_bahan_baku'];
+
+        // Update pengadaan dan detail pengadaan
+        $pengadaan->update([
+            'harga_pengadaan' => $updateData['harga_pengadaan'],
+        ]);
+
+        $detailPengadaan->update([
+            'id_bahan_baku' => $updateData['id_bahan_baku'],
+            'total_harga' => $totalHargaBaru,
+            'jumlah_bahan_baku' => $updateData['jumlah_bahan_baku']
+        ]);
 
         return response([
             'message' => 'Update Pengadaan Success',
-            'data' => $pengadaan,
+            'data' => [
+                'pengadaan' => $pengadaan,
+                'detail_pengadaan' => $detailPengadaan
+            ]
         ], 200);
     }
+
+
 
     /**
      * Remove the specified resource from storage.

@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import {
   GetPesananByKeranjang,
   UpdatePesanan,
+  sendBukti,
 } from "../../../../../api/CustomerApi/Pesanan/PesananApi";
-import { Button, Spinner } from "@material-tailwind/react";
+import { Button, Spinner, Input } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { getFotoProduk } from "../../../../../api";
 
@@ -13,18 +14,21 @@ const DetailPesananByKeranjang = () => {
   const [detail, setDetail] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [jumlahPromo, setJumlahPromo] = useState(0);
+  const [isPending, setIsPending] = useState(false);
+  const [buktiDikirim, setBuktiDikirim] = useState(false);
+  const [data, setData] = useState({
+    bukti_pembayaran: null,
+    id_pesanan: null,
+  });
   const navigate = useNavigate();
 
   const fetchDetail = async () => {
     setLoading(true);
     try {
       const data = await GetPesananByKeranjang(id);
-      console.log("Ini Datanya",data);
-      const bayaran = data.filter(
-        (item) => item.pesanan.jarak_pengiriman >= 0
-      );
+      console.log("Ini Datanya", data);
+      const bayaran = data.filter((item) => item.pesanan.jarak_pengiriman >= 0);
       setDetail(bayaran);
       setLoading(false);
     } catch (error) {
@@ -35,18 +39,48 @@ const DetailPesananByKeranjang = () => {
 
   const handleUpdate = async () => {
     try {
-      const updatedPesanan = {
-        jumlah_promo: jumlahPromo,
-      };
+      const updatedPesanan = { jumlah_promo: jumlahPromo };
       const idPesan = pesanan.id;
 
-      navigate(`/transaksiCetak/${idPesan}`);
       await UpdatePesanan(idPesan, updatedPesanan);
       alert("Pesanan berhasil diperbarui");
+      navigate(`/transaksiCetak/${idPesan}`);
     } catch (error) {
       console.error("Error updating data:", error);
       alert("Gagal memperbarui pesanan");
     }
+  };
+
+  const handleChange = (event) => {
+    if (event.target.name === "bukti_pembayaran") {
+      setData({
+        ...data,
+        bukti_pembayaran: event.target.files[0],
+        id_pesanan: pesanan.id,
+      });
+    } else {
+      setData({ ...data, [event.target.name]: event.target.value });
+    }
+  };
+
+  const handleSendBukti = () => {
+    setIsPending(true);
+
+    const formData = new FormData();
+    formData.append("bukti_pembayaran", data.bukti_pembayaran);
+    formData.append("id_pesanan", data.id_pesanan);
+
+    sendBukti(formData)
+      .then((response) => {
+        setIsPending(false);
+        console.log(response.message);
+        setBuktiDikirim(true);
+        alert("Bukti pembayaran berhasil dikirim");
+      })
+      .catch((error) => {
+        setIsPending(false);
+        console.error("Error sending bukti:", error);
+      });
   };
 
   useEffect(() => {
@@ -69,11 +103,14 @@ const DetailPesananByKeranjang = () => {
   }
 
   if (!detail || detail.length === 0) {
-    return <div className="text-center">Sabar Yah lagi sementara di konfirmasi</div>;
+    return (
+      <div className="text-center">Sabar Yah lagi sementara di konfirmasi</div>
+    );
   }
 
-  // Ambil pesanan dari item pertama
   const pesanan = detail[0].pesanan;
+  const isLunas = pesanan.status_pesanan === "Lunas";
+  const totalHargaSetelahDiskon = pesanan.total_harga - jumlahPromo * 100;
 
   return (
     <div className="w-full px-96 py-20">
@@ -105,51 +142,70 @@ const DetailPesananByKeranjang = () => {
               </div>
             </div>
           ))}
-          {/* Jika pesanan adalah objek dalam detail */}
         </div>
         {pesanan && (
-          <div className="bg-orange-900 w-1/2">
-            <div className="">
-              <div className="text-center border-2 items-center border-sky-500">
-                <h1 className="font-bold text-2xl">
-                  Detail Pesanan
-                </h1>
-              </div>
-              <h1 className="font-bold text-2xl mb-4">
-                Jumlah Pesanan: {pesanan.jumlah_produk}
-              </h1>
-              <h1 className="font-bold text-2xl mb-4">
-                Total Harga:{" "}
-                {pesanan.total_harga.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                })}
-              </h1>
-              <h1 className="font-bold text-2xl mb-4">
-                Promo Poin yang Digunakan:{" "}
-                <input
-                  type="number"
-                  value={jumlahPromo}
-                  onChange={(e) =>
-                    setJumlahPromo(parseInt(e.target.value) || 0)
-                  }
-                  className="border rounded-md p-1"
-                />
-              </h1>
-              <h1 className="font-bold text-2xl mb-4">
-                Total Harga:{" "}
-                {(
-                  pesanan.total_harga - // Ongkos kirim
-                  jumlahPromo * 100
-                ) // Potongan poin
-                  .toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  })}
-              </h1>
-              {/* <div className="flex justify-between"> */}
-              <Button onClick={handleUpdate} className="">
-                Pesan Sekarang
+          <div className="bg-orange-900 w-1/2 p-4">
+            <div className="text-center border-2 items-center border-sky-500 mb-4">
+              <h1 className="font-bold text-2xl">Detail Pesanan</h1>
+            </div>
+            <h1 className="font-bold text-2xl mb-4">
+              Jumlah Pesanan: {pesanan.jumlah_produk}
+            </h1>
+            <h1 className="font-bold text-2xl mb-4">
+              Total Harga:{" "}
+              {pesanan.total_harga.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })}
+            </h1>
+            <h1 className="font-bold text-2xl mb-4">
+              Promo Poin yang Digunakan:{" "}
+              <input
+                type="number"
+                value={jumlahPromo}
+                onChange={(e) => setJumlahPromo(parseInt(e.target.value) || 0)}
+                className="border rounded-md p-1"
+              />
+            </h1>
+            <h1 className="font-bold text-2xl mb-4">
+              Total Harga Setelah Diskon:{" "}
+              {totalHargaSetelahDiskon.toLocaleString("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })}
+            </h1>
+            <div className="mb-4">
+              <Input
+                name="bukti_pembayaran"
+                type="file"
+                onChange={handleChange}
+                label="Bukti Pembayaran"
+                color="blue"
+              />
+            </div>
+            <div className="flex space-x-4">
+              <Button
+                color="blue"
+                onClick={handleSendBukti}
+                disabled={isPending || buktiDikirim}
+              >
+                {isPending ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span className="ml-2">Loading...</span>
+                  </>
+                ) : buktiDikirim ? (
+                  "Bukti Dikirim"
+                ) : (
+                  "Kirim Bukti Pembayaran"
+                )}
+              </Button>
+              <Button
+                color="green"
+                onClick={handleUpdate}
+                disabled={!buktiDikirim}
+              >
+                Lihat Nota
               </Button>
             </div>
           </div>

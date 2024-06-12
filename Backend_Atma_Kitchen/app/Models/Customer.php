@@ -11,12 +11,13 @@ class Customer extends Model
     
     public $timestamps = false;
     protected $table = "customer";
-    protected $primaryKey = "id";
+    protected $primaryKey = "id_saldo";
 
     protected $fillable = [
         'saldo',
         'poin',
         'id_user',
+        'id_alamat',
     ];
 
     public function User(){
